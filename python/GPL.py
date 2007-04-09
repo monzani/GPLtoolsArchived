@@ -14,9 +14,10 @@ import shutil
 ## "log"  sends messages to sys.stdout
 ## "loge" sends messages to sys.stderr
 import logging
-log = logging.getLogger("gpl")
+log = logging.getLogger("gplLong")
 log.debug("Established message logger")
 loge = logging.getLogger("gple")
+
 
 
 ##

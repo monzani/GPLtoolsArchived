@@ -5,12 +5,12 @@
 
 from GPL import *
 
-class PipelineSummary:
+class PipelineSummary():
     """
     @brief Create and write user-generated summary data for pipeline DB
 
     Example:
-    mySummary = PipelineSummary("pipeline_summary")
+    mySummary = PipelineSummary.PipelineSummary("pipeline_summary")
     mySummary.add("EventsProcessed","41669")
     mySummary.add("TimeElapsed","493829746")
     mySummary.add("TimeInSAA","89334")
@@ -34,39 +34,43 @@ Pipeline.TimeInSAA: 89334
 
     3/21/2007
     """
-    itemList = []
-    numItems = 0
-    filename = ""
-    prefix = ""
 
 # Constructor (specifies name of summary file)
     def __init__(self, filename="./pipeline_summary", prefix="Pipeline."):
+        self.itemList = []
+        self.numItems = 0
         self.prefix = prefix
         self.filename = filename
-        log.debug('entering constructor, filename = '+self.filename)
+        log.debug('PipelineSummary constructor, filename = '+self.filename)
         return
 
 # Main entry to add new summary datum
     def add(self,key,value):
-        log.debug('entering add(), key= '+key+', value= '+value)
+#        log.debug('entering add(), key= '+key+', value= '+value)
         self.numItems = self.numItems+1
-        self.itemList.append(self.prefix+key+': '+value+'\n')
+        self.itemList.append(self.prefix+key+': '+value+"\n")
         return
 
 # Debugging dump of internal list of summary data
     def dump(self):
-        log.info('Dump of current user summary data:')
-        for x in self.itemList: print x
+        print 'Dump of current user summary data:'
+        print "Summary filename = ",self.filename
+        print "Summary item prefix = ",self.prefix
+        print "There are ",self.numItems," items in the Summary list."
+#        print self.itemList
+        print "\n----------begin summary----------------------------------"
+        for x in self.itemList:
+            x = x.strip()
+            print x
+        print "----------end summary----------------------------------\n"
 
 
 # Write assembled list of summary data to summary file
     def write(self):
-        log.debug('entering write()')
+        log.debug('entering PipelineSummary.write() to '+self.filename)
 
         log.debug('Number of items in list = '+str(self.numItems)+' or '+str(len(self.itemList)))
-        summary = open(self.filename,'a')
-
-        summary.writelines(self.itemList)
-
-        summary.close()
+        self.summary = open(self.filename,'a')
+        self.summary.writelines(self.itemList)
+        self.summary.close()
         return

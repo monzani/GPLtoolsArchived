@@ -30,10 +30,10 @@ def init():
 ## Define production directory for module search and logger config
     try:
         GPL2 = os.environ['GPL2']
-        print "Using $GPL2 location for GPLtools: ",GPL2
+        print "GPLinit: Using $GPL2 location for GPLtools: ",GPL2
     except KeyError:
-        GPL2 = "/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPL2"
-        print "Using hardwired default location for GPLtools: ",GPL2
+        GPL2 = "/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod"
+        print "GPLinit: Using hardwired default location for GPLtools: ",GPL2
 
     GPL2 = GPL2 + "/python"
     sys.path.insert(0, GPL2)
@@ -45,7 +45,7 @@ def init():
         GPL2debug = os.environ['GPL2_DEBUG']
         sys.path.insert(0, GPL2debug)
         configFile = GPL2debug+'/logger.cfg'
-        print "Using $GPL2_DEBUG override location for GPLtools: ",GPL2debug
+        print "GPLinit: Using $GPL2_DEBUG override location for GPLtools: ",GPL2debug
     except KeyError:
         configFile = GPL2+'/logger.cfg'
         
