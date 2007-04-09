@@ -1,0 +1,30 @@
+------------------------------------------------------------
+User: dragon  Wed Mar 21 16:12:57 PDT 2007
+GPLtools
+
+Log Message:
+Initial package creation
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0
+		
+N GPLtools/cmt/Makefile
+I GPLtools/cmt/requirements~
+N GPLtools/cmt/setup.csh
+N GPLtools/cmt/setup.sh
+N GPLtools/cmt/cleanup.csh
+N GPLtools/cmt/cleanup.sh
+N GPLtools/cmt/requirements
+N GPLtools/python/GPL.py
+N GPLtools/python/GPLinit.py
+N GPLtools/python/PipelineSummary.py
+N GPLtools/python/logger.cfg
+N GPLtools/python/runner.py
+N GPLtools/python/stageFiles.py
+N GPLtools/doc/release.notes
+
+No conflicts created by this import
+
+    *
