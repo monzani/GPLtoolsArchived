@@ -4,6 +4,6 @@ fi
 . ${CMTROOT}/mgr/setup.sh
 tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
 if test ! $? = 0 ; then tempfile=/tmp/cmt.$$; fi
-${CMTROOT}/mgr/cmt -quiet cleanup -sh -pack=GPLtools -version=v0 -path=/afs/slac.stanford.edu/u/ec/dragon/glast $* >${tempfile}; . ${tempfile}
+${CMTROOT}/mgr/cmt -quiet cleanup -sh -pack=GPLtools -version=v0r1 -path=/afs/slac.stanford.edu/u/ec/dragon/glast $* >${tempfile}; . ${tempfile}
 /bin/rm -f ${tempfile}
 
