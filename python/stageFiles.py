@@ -13,7 +13,7 @@ import shutil
 
 ## Set up message logging
 import logging
-log = logging.getLogger("gpl")
+log = logging.getLogger("gplLong")
 
 class StageSet:
 

@@ -69,7 +69,7 @@ Pipeline.TimeInSAA: 89334
     def write(self):
         log.debug('entering PipelineSummary.write() to '+self.filename)
 
-        log.debug('Number of items in list = '+str(self.numItems)+' or '+str(len(self.itemList)))
+        log.debug('Number of items in list = '+str(self.numItems))
         self.summary = open(self.filename,'a')
         self.summary.writelines(self.itemList)
         self.summary.close()
