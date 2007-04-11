@@ -8,7 +8,7 @@ from GPL import *
 class PipelineSummary():
     """
     @brief Create and write user-generated summary data for pipeline DB
-
+$Id$
     Example:
     mySummary = PipelineSummary.PipelineSummary("pipeline_summary")
     mySummary.add("EventsProcessed","41669")

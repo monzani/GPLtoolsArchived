@@ -1,6 +1,6 @@
 #  GPL.py
 """@brief Import tools for use with GLAST Pipeline
-
+$Id$
 @author T.Glanzman
 03 Mar 2007
 """
@@ -8,6 +8,7 @@
 import os
 import sys
 import shutil
+
 
 ##
 ## Define two message loggers for this module

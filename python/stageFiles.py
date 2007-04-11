@@ -1,6 +1,6 @@
 #  stageFiles.py
 """@brief Manage staging of files to/from machine-local disk.
-
+$Id$
 @author W. Focke <focke@slac.stanford.edu>
 
 refactored: T.Glanzman 2/22/2007

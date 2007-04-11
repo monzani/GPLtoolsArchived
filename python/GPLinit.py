@@ -1,6 +1,6 @@
 #  GPLinit.py
 """@brief Initialize the GLAST PipeLine (GPL) python environment.
-
+$Id$
 1. Establish route to GPL module directory
 2. Configure the message logger
 
