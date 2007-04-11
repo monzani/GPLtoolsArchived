@@ -32,10 +32,12 @@ def init():
         GPL2 = os.environ['GPL2']
         GPL2 = GPL2.rstrip('/')   # remove trailing "/", if any
         print "GPLinit: Using GPLtools from user-specified $GPL2: "
+        sys.stdout.flush()
         os.system("ls -ld "+GPL2)
     except KeyError:
         GPL2 = "/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod"
         print "GPLinit: Using default location for GPLtools: "
+        sys.stdout.flush()
         os.system("ls -ld "+GPL2)
 
     GPL2 = GPL2 + "/python"
@@ -51,6 +53,7 @@ def init():
         print "GPLinit: Using $GPL2_DEBUG override location for GPLtools: ",GPL2debug
     except KeyError:
         configFile = GPL2+'/logger.cfg'
+    sys.stdout.flush()
         
 
 ##

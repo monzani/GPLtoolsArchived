@@ -63,7 +63,7 @@ Pipeline.TimeInSAA: 89334
             x = x.strip()
             print x
         print "----------end summary----------------------------------\n"
-
+        sys.stdout.flush()
 
 # Write assembled list of summary data to summary file
     def write(self):

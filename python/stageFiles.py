@@ -368,4 +368,4 @@ class StageSet:
             ix = ix + 1
 
         print '\n\n'
-
+        sys.stdout.flush()
