@@ -30,10 +30,13 @@ def init():
 ## Define production directory for module search and logger config
     try:
         GPL2 = os.environ['GPL2']
-        print "GPLinit: Using $GPL2 location for GPLtools: ",GPL2
+        GPL2 = GPL2.rstrip('/')   # remove trailing "/", if any
+        print "GPLinit: Using GPLtools from user-specified $GPL2: "
+        os.system("ls -ld "+GPL2)
     except KeyError:
         GPL2 = "/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod"
-        print "GPLinit: Using hardwired default location for GPLtools: ",GPL2
+        print "GPLinit: Using default location for GPLtools: "
+        os.system("ls -ld "+GPL2)
 
     GPL2 = GPL2 + "/python"
     sys.path.insert(0, GPL2)
