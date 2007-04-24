@@ -1,0 +1,253 @@
+------------------------------------------------------------
+TAG
+Tag name: v0r6, operation: add
+Package: GPLtools
+User: dragon  Wed Apr 11 14:06:57 2007
+Files:
+  GPLtools/ChangeLog  1.13
+  GPLtools/cmt/setup.csh  1.5
+  GPLtools/cmt/cleanup.csh  1.5
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.5
+  GPLtools/cmt/setup.sh  1.5
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.4
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 14:06:44 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py PipelineSummary.py stageFiles.py 
+Log Message:
+Minor change adding "sys.stdout.flush()" after print statements to preserve order of test messaging.
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 14:06:10 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+update
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r5, operation: add
+Package: GPLtools
+User: dragon  Wed Apr 11 08:18:23 2007
+Files:
+  GPLtools/ChangeLog  1.11
+  GPLtools/cmt/setup.csh  1.4
+  GPLtools/cmt/cleanup.csh  1.4
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.4
+  GPLtools/cmt/setup.sh  1.4
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.4
+  GPLtools/python/stageFiles.py  1.3
+  GPLtools/python/PipelineSummary.py  1.4
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 08:18:11 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Oops, forgot to commit from top-level directory.
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 08:17:36 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+Modify GPLinit output to include an unambiguous version signature, i.e.,
+GPLinit: Using default location for GPLtools:
+lrwxr-xr-x  1 dragon ec 4 Apr 10 09:24 /afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod -> v0r3
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r4, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 17:15:53 2007
+Files:
+  GPLtools/ChangeLog  1.7
+  GPLtools/cmt/setup.csh  1.3
+  GPLtools/cmt/cleanup.csh  1.3
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.3
+  GPLtools/cmt/setup.sh  1.3
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.3
+  GPLtools/python/stageFiles.py  1.3
+  GPLtools/python/PipelineSummary.py  1.4
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 17:15:32 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPL.py GPLinit.py PipelineSummary.py logger.cfg stageFiles.py 
+Log Message:
+Add cvs Id info to all files.
+Add cvs Id info to all files
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 17:15:17 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Add cvs Id info to all files.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r3, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 09:23:33 2007
+Files:
+  GPLtools/ChangeLog  1.5
+  GPLtools/cmt/setup.csh  1.2
+  GPLtools/cmt/cleanup.csh  1.2
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.2
+  GPLtools/cmt/setup.sh  1.2
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.3
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.2
+  GPLtools/python/PipelineSummary.py  1.3
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 09:23:14 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Hmmm, don't understand why a cvs commit is necessary at this level - to keep cmt happy...?
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r2, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 09:20:56 2007
+Files:
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.3
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.2
+  GPLtools/python/PipelineSummary.py  1.3
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 09:20:45 PDT 2007
+GPLtools/python
+
+Modified Files:
+	PipelineSummary.py logger.cfg stageFiles.py 
+Log Message:
+Minor changes: made new slightly longer message format uniformly used throughout (including the module name and line number)
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r1, operation: add
+Package: GPLtools
+User: dragon  Mon Apr  9 10:09:50 2007
+Files:
+  GPLtools/ChangeLog  1.1
+  GPLtools/cmt/setup.csh  1.1.1.1
+  GPLtools/cmt/cleanup.csh  1.1.1.1
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.1.1.1
+  GPLtools/cmt/setup.sh  1.1.1.1
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.2
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.1.1.1
+  GPLtools/python/PipelineSummary.py  1.2
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Apr  9 10:08:20 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPL.py GPLinit.py PipelineSummary.py logger.cfg 
+Log Message:
+Fixes:
+ PipelineSummary - allow multiple summary blocks in parallel
+Other changes:
+ logger.cfg/GPL.py - activate module name and line number in messages
+ GPLinit.py - institute new, logical location for prod version of GPLtools package,
+	/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod
+
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Mar 21 16:12:57 PDT 2007
+GPLtools
+
+Log Message:
+Initial package creation
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0
+		
+N GPLtools/cmt/Makefile
+I GPLtools/cmt/requirements~
+N GPLtools/cmt/setup.csh
+N GPLtools/cmt/setup.sh
+N GPLtools/cmt/cleanup.csh
+N GPLtools/cmt/cleanup.sh
+N GPLtools/cmt/requirements
+N GPLtools/python/GPL.py
+N GPLtools/python/GPLinit.py
+N GPLtools/python/PipelineSummary.py
+N GPLtools/python/logger.cfg
+N GPLtools/python/runner.py
+N GPLtools/python/stageFiles.py
+N GPLtools/doc/release.notes
+
+No conflicts created by this import
+
+    *
