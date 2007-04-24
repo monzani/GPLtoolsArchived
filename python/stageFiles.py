@@ -240,7 +240,7 @@ class StageSet:
                 # We handle xrootd files differently than ordinary files
                 if realName[0:5] == "root:":
                     log.debug("We have an xrootd file! "+realName)
-                    xrdcmd="~glastdat//bin/xrdcp -np "+stageName+" "+realName
+                    xrdcmd="~glastdat//bin/xrdcp -np -f "+stageName+" "+realName
                     log.debug("About to execute this command:\n"+xrdcmd+"\n")
                     os.system(xrdcmd)
                 else:            # Ordinary disk file
