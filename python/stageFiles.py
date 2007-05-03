@@ -239,10 +239,18 @@ class StageSet:
             if os.access(stageName,os.R_OK):
                 # We handle xrootd files differently than ordinary files
                 if realName[0:5] == "root:":
-                    log.debug("We have an xrootd file! "+realName)
-                    xrdcmd="~glastdat//bin/xrdcp -np -f "+stageName+" "+realName
-                    log.debug("About to execute this command:\n"+xrdcmd+"\n")
-                    os.system(xrdcmd)
+                    try:
+                        xrdcmd="~glastdat//bin/xrdcp -np "+stageName+" "+realName
+                        log.debug("Executing:\n"+xrdcmd+"\n")
+                        os.system(xrdcmd)
+                    except:
+                        xrdcmd="~glastdat//bin/xrdcp -np -f "+stageName+" "+realName
+                        log.debug("Executing:\n"+xrdcmd+"\n")
+                        try:
+                            os.system(xrdcmd)
+                        except:
+                            log.error("Unable to copy file into xrootd")
+                            rc += 1
                 else:            # Ordinary disk file
                     maxtry = 30
                     mytry = 1
@@ -258,7 +266,7 @@ class StageSet:
                             if mytry == maxtry: rc=1
             else:
                 log.error('Expected output file does not exist! '+stageName)
-                rc = 1
+                rc += 1
 
         if option == "keep": return rc              # Early return #1
 
