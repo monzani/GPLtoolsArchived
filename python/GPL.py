@@ -16,26 +16,26 @@ import shutil
 ## "loge" sends messages to sys.stderr
 import logging
 log = logging.getLogger("gplLong")
-log.debug("Established message logger")
+#log.debug("Established message logger")
 loge = logging.getLogger("gple")
 
 
 
 ##
 ## Setup for file staging
-log.debug("import stageFiles")
+#log.debug("import stageFiles")
 import stageFiles
 
 
 
 ##
 ## Setup summary data utility
-log.debug("import PipelineSummary")
+#log.debug("import PipelineSummary")
 import PipelineSummary
 
 
 ##
 ## Setup for run wrapper
-log.debug("import run")
+#log.debug("import run")
 #from runner import run
 import runner
