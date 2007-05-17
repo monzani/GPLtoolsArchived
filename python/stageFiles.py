@@ -159,9 +159,14 @@ class StageSet:
         self.outFiles = {}
         self.realInFiles = {}
         self.realOutFiles = {}
+        self.realOutFiles2 = {}
         self.numIn=0
         self.numOut=0
+        self.xrootdIgnoreErrors = False
 
+    def xrootdIgnore(self,flag):
+        log.info("Setting xrootdIgnoreErrors to "+str(flag))
+        self.xrootdIgnoreErrors = flag
 
     def stageIn(self, inFile):
         """@brief Stage an input file.
@@ -200,9 +205,10 @@ class StageSet:
         return stageName
 
     
-    def stageOut(self, outFile):
+    def stageOut(self, outFile, outFile2=""):
         """@brief Stage an output file.
-        @param outFile real name of the output file
+        @param outFile  = real name of the primary output file
+               outFile2 = real name of the secondary output file (e.g. xrootd)
         @return name of the staged file
         """
         if self.setupFlag <> 1: setup()
@@ -211,9 +217,13 @@ class StageSet:
             return outFile
         
         log.info("stageOut for: "+outFile)
+        if outFile == "":
+            log.error("primary stage file not specified")
+            return ""
         stageName = self.stagedName(outFile)
         self.numOut=self.numOut+1
         self.realOutFiles[self.numOut]=outFile
+        self.realOutFiles2[self.numOut]=outFile2
         self.outFiles[outFile] = stageName
 
         return stageName
@@ -221,53 +231,68 @@ class StageSet:
 
     def finish(self,option=""):
         """@brief Delete staged inputs, move outputs to final destination.
-        option: additional instruction
-        <null>  - perform all functions
-        keep    - copy stageOut files to final locations, but do nothing else
-                  (in anticipation of further file use)
-        clean   - move/delete all staged files, but do not remove directory
-                  (in anticipation of further directory use)
+        option: additional functions
+        keep    - no additional function (in anticipation of further file use)
+        clean   - +move/delete all staged files (in anticipation of further directory use)
+        <null>  - +remove stage directories (full cleanup)
         """
         log.debug('Entering stage.finish('+option+')')
-        rc = 0
-
+        rc = 0     # overall
+        rcf = 0    # standard file copy
+        rcx = 0    # xrootd copy
+        rce = 0    # file existence 
+        
         ## bail out if no staging was done
         if self.setupOK == 0: return rc
+        log.debug("*******************************************")
 
         # copy stageOut files to their final destinations
-        for realName, stageName in self.outFiles.items():
-            if os.access(stageName,os.R_OK):
-                # We handle xrootd files differently than ordinary files
+        for item in self.realOutFiles.items():
+            index = item[0]
+            realName = item[1]
+            realName2 = self.realOutFiles2[index]
+            stageName = self.outFiles[realName]
+            print "\n**TEST: index = ",index,", stageName = ",stageName,\
+                  "\n\t>> realName= ",realName,", realName2 = ",realName2
+            if os.access(stageName,os.R_OK):    # Check output file really exists before copying
+
+            # Primary stageOut file
+                # xrootd file
                 if realName[0:5] == "root:":
-                    try:
-                        xrdcmd="~glastdat//bin/xrdcp -np "+stageName+" "+realName
-                        log.debug("Executing:\n"+xrdcmd+"\n")
-                        os.system(xrdcmd)
-                    except:
-                        xrdcmd="~glastdat//bin/xrdcp -np -f "+stageName+" "+realName
-                        log.debug("Executing:\n"+xrdcmd+"\n")
-                        try:
-                            os.system(xrdcmd)
-                        except:
-                            log.error("Unable to copy file into xrootd")
-                            rc += 1
-                else:            # Ordinary disk file
-                    maxtry = 30
-                    mytry = 1
-                    while mytry < maxtry:
-                        try:
-                            log.info("\ncp "+stageName+" "+realName)
-                            shutil.copy(stageName, realName)
-                            break
-                        except:
-                            log.error("Error copying stageOut file to "+realName+" (try "+`mytry`+")")
-                            os.system("sleep 2")
-                            mytry = mytry + 1
-                            if mytry == maxtry: rc=1
+                    x = self.xrootdCopy(stageName,realName)
+                    rcx += x
+                    log.debug("ReturnCode from xrootdCopy() = "+str(x))
+
+                # Ordinary disk file
+                else:
+                    s = self.fileCopy(stageName,realName)
+                    rcf += s
+                    log.debug("ReturnCode from fileCopy() = "+str(s))
+
+             # Secondary stageOut file [optional]     
+                if realName2 == "":     # check if 2nd output location is specified
+                    break
+                else:
+                    # xrootd file
+                    if realName2[0:5] == "root:":
+                        x = self.xrootdCopy(stageName,realName2)
+                        rcx += x
+                        log.debug("ReturnCode from xrootdCopy() = "+str(x))
+                    # Ordinary disk file
+                    else:
+                        s = self.fileCopy(stageName,realName2)
+                        rcf += s
+                        log.debug("ReturnCode from fileCopy() = "+str(s))
             else:
                 log.error('Expected output file does not exist! '+stageName)
-                rc += 1
+                rce += 1
 
+        ## Define return code as sum of relevant errors
+        if self.xrootdIgnoreErrors == True:
+            rc = rcf + rce
+        else:
+            rc = rcf + rcx + rce
+            
         if option == "keep": return rc              # Early return #1
 
         # remove stageIn files from staging directory
@@ -299,19 +324,83 @@ class StageSet:
                 shutil.rmtree(self.stageDir)
             except:
                 log.error("Could not remove stage directory, "+self.stageDir)
-                
-##             junk=os.listdir(self.stageDir)
-##             for x in junk:
-##                 y = os.path.join(self.stageDir,x)
-##                 log.warning('Removing '+y)
-##                 os.remove(y)
-
-##             os.rmdir(self.stageDir)
-            
         self.setupFlag=0
         self.setupOK=0
         self.reset()
  
+        return rc
+
+
+
+
+    def xrootdCopy(self,fromFile,toFile):
+        """
+        @brief copy a staged file to final xrootd repository.
+        @param fromFile = name of staged file, toFile = name of final file
+        @return success code
+        """
+        rc = 0
+        rcx1 = 0
+        rcx2 = 0
+
+        xrdcp ="~glastdat/bin/xrdcp -np "   #first time try plain copy
+        xrdcmd=xrdcp+fromFile+" "+toFile
+        log.info("Executing:\n"+xrdcmd)
+# Alternate way to run xrdcp without the error message being displayed
+        fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
+        foo = fd[2].read()
+        fd[0].close()
+        fd[1].close()
+        fd[2].close()
+        rcx1 = len(foo)      # If xrdcp emits *any* stderr message, interpret as error
+##
+## We must try to copy into xrootd a second time if the first fails.  That is
+##  because xrdcp has a silly "overwrite" option: it must only be used if the
+##  file already exists, but not otherwise.  So, in the case we're overwriting
+##  the first attempt will fail, but the second should succeed.
+##
+        if rcx1 != 0:        # This may just mean the file already exists
+#            log.warning("xrdcp failure: rcx1 = "+str(rcx1)+", for file "+toFile)
+            xrdcmd=xrdcp+" -f "+fromFile+" "+toFile #2nd time try overwrite copy
+            log.info("Executing:\n"+xrdcmd)
+            fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
+            foo = fd[2].read()
+            fd[2].close()
+            fd[1].close()
+            fd[0].close()
+            log.debug("Captured output from xrdcp command:\n"+foo)
+            rcx2 = len(foo)      # If xrdcp emits *any* message, interpret as error
+            log.debug("Length of response = "+str(rcx2))
+                        
+            if rcx2 != 0:     # This is likely a genuine error
+                log.warning("xrdcp -f failure: rcx2 = "+str(rcx2)+", for file "+toFile)
+                log.error("xrootd failure: could not copy file "+fromFile)
+                rc += 1
+        return rc
+
+
+
+    
+
+    def fileCopy(self,fromFile,toFile):
+        """
+        @brief copy a staged file to final disk location
+        @param fromFile = name of staged file, toFile = name of final file
+        @return success code
+        """
+        maxtry = 5
+        mytry = 1
+        rc=0
+        while mytry < maxtry:
+            try:
+                log.info("Executing:\ncp "+fromFile+" "+toFile)
+                shutil.copy(fromFile,toFile)
+                break
+            except:
+                log.error("Error copying stageOut file to "+toFile+" (try "+`mytry`+")")
+                os.system("sleep 2")
+                mytry = mytry + 1
+                if mytry == maxtry: rc=1
         return rc
 
 
@@ -370,9 +459,14 @@ class StageSet:
         print self.numOut," files staged out:"
         ix=1
         while ix <= self.numOut:
-            foo = self.realOutFiles[ix]
-            foo2 = self.outFiles.get(foo)
-            print foo," <-- ",foo2
+            foo1 = self.realOutFiles[ix]
+            foo2 = self.realOutFiles2[ix]
+            foo3 = self.outFiles.get(foo1)
+            if foo2 == "":
+                print foo1," <-- ",foo3
+            else:
+                print foo1," & "
+                print foo2," <-- ",foo3
             ix = ix + 1
 
         print '\n\n'
