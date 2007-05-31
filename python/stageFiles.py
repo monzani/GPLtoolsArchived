@@ -252,8 +252,8 @@ class StageSet:
             realName = item[1]
             realName2 = self.realOutFiles2[index]
             stageName = self.outFiles[realName]
-            print "\n**TEST: index = ",index,", stageName = ",stageName,\
-                  "\n\t>> realName= ",realName,", realName2 = ",realName2
+##            print "\n**TEST: index = ",index,", stageName = ",stageName,\
+##                  "\n\t>> realName= ",realName,", realName2 = ",realName2
             if os.access(stageName,os.R_OK):    # Check output file really exists before copying
 
             # Primary stageOut file
@@ -271,7 +271,7 @@ class StageSet:
 
              # Secondary stageOut file [optional]     
                 if realName2 == "":     # check if 2nd output location is specified
-                    break
+                    continue
                 else:
                     # xrootd file
                     if realName2[0:5] == "root:":
