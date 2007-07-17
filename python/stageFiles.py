@@ -175,7 +175,7 @@ class StageSet:
         """
         if self.setupFlag <> 1: self.setup()
         if self.setupOK <> 1:
-            log.warning("stageIn not available for: "+inFile)
+            log.warning("Stage IN not available for: "+inFile)
             return inFile
         
 ## To allow for possible filesystem failures (e.g. delay to
@@ -212,15 +212,21 @@ class StageSet:
         @return name of the staged file
         """
         if self.setupFlag <> 1: setup()
-        if self.setupOK <> 1:
-            log.warning("stageOut not available for: "+outFile)
-            return outFile
+
+## Build stage file map even if staging is disabled - so that copying
+## to possible 2nd target (e.g., xrootd) will still take place
         
-        log.info("stageOut for: "+outFile)
         if outFile == "":
-            log.error("primary stage file not specified")
+            log.error("Primary stage file not specified")
             return ""
-        stageName = self.stagedName(outFile)
+
+        if self.setupOK <> 1:
+            log.warning("Stage OUT not available for "+outFile)
+            stageName = outFile
+        else:
+            stageName = self.stagedName(outFile)
+            log.info("stageOut for: "+outFile)
+
         self.numOut=self.numOut+1
         self.realOutFiles[self.numOut]=outFile
         self.realOutFiles2[self.numOut]=outFile2
@@ -243,7 +249,8 @@ class StageSet:
         rce = 0    # file existence 
         
         ## bail out if no staging was done
-        if self.setupOK == 0: return rc
+        if self.setupOK == 0:
+            log.warning("Staging disabled: look only if secondary target needs to receive produced file(s).")
         log.debug("*******************************************")
 
         # copy stageOut files to their final destinations
@@ -256,20 +263,21 @@ class StageSet:
 ##                  "\n\t>> realName= ",realName,", realName2 = ",realName2
             if os.access(stageName,os.R_OK):    # Check output file really exists before copying
 
-            # Primary stageOut file
+            # Copy Primary stageOut file (only if staging is enabled)
+                if self.setupOK <> 0:
                 # xrootd file
-                if realName[0:5] == "root:":
-                    x = self.xrootdCopy(stageName,realName)
-                    rcx += x
-                    log.debug("ReturnCode from xrootdCopy() = "+str(x))
+                    if realName[0:5] == "root:":
+                        x = self.xrootdCopy(stageName,realName)
+                        rcx += x
+                        log.debug("ReturnCode from xrootdCopy() = "+str(x))
 
                 # Ordinary disk file
-                else:
-                    s = self.fileCopy(stageName,realName)
-                    rcf += s
-                    log.debug("ReturnCode from fileCopy() = "+str(s))
+                    else:
+                        s = self.fileCopy(stageName,realName)
+                        rcf += s
+                        log.debug("ReturnCode from fileCopy() = "+str(s))
 
-             # Secondary stageOut file [optional]     
+             # Copy Secondary stageOut file [optional]     
                 if realName2 == "":     # check if 2nd output location is specified
                     continue
                 else:
@@ -295,16 +303,19 @@ class StageSet:
             
         if option == "keep": return rc              # Early return #1
 
+
+## Remove stages files (unless staging is disabled)
         # remove stageIn files from staging directory
-        for stageName in self.inFiles.values():
-            if os.access(stageName,os.W_OK): os.remove(stageName)
+        if self.setupOK <> 0:
+            for stageName in self.inFiles.values():
+                if os.access(stageName,os.W_OK): os.remove(stageName)
 
         # remove stageOut file from staging directory
-        for stageName in self.outFiles.values():
-            if os.access(stageName,os.W_OK):
-                os.remove(stageName)  # remove stageOut files
-            else:
-                log.warning("Could not access/remove from stage directory: "+stageName)
+            for stageName in self.outFiles.values():
+                if os.access(stageName,os.W_OK):
+                    os.remove(stageName)  # remove stageOut files
+                else:
+                    log.warning("Could not access/remove from stage directory: "+stageName)
 
         # Initialize stage data structures
         self.reset()
@@ -312,18 +323,20 @@ class StageSet:
         if option == "clean": return rc           # Early return #2
                             
 
-        # remove stage directory
-        try:
-            os.rmdir(self.stageDir)
-        except:
-            log.warning("Staging directory not empty after cleanup!!")
-            log.warning("Content of staging directory "+self.stageDir)
-            os.system('ls -l '+self.stageDir)
-            log.warning("*** All files & directories will be deleted! ***")
+        # remove stage directory (unless staging is disabled)
+        if self.setupOK <> 0:
             try:
-                shutil.rmtree(self.stageDir)
+                os.rmdir(self.stageDir)
             except:
-                log.error("Could not remove stage directory, "+self.stageDir)
+                log.warning("Staging directory not empty after cleanup!!")
+                log.warning("Content of staging directory "+self.stageDir)
+                os.system('ls -l '+self.stageDir)
+                log.warning("*** All files & directories will be deleted! ***")
+                try:
+                    shutil.rmtree(self.stageDir)
+                except:
+                    log.error("Could not remove stage directory, "+self.stageDir)
+
         self.setupFlag=0
         self.setupOK=0
         self.reset()
@@ -440,7 +453,7 @@ class StageSet:
         0 = staging not in operation
         1 = staging initialized and in operation
         """
-        return `self.setupOK`
+        return self.setupOK
 
 
 
@@ -448,7 +461,7 @@ class StageSet:
         """@brief Dump names of staged files to stdout"""
         print '\n\n\tStatus of File Staging System'
         print 'setupFlag= ',self.setupFlag,', setupOK= ',self.setupOK,', stageDirectory= ',self.stageDir,'\n'
-        print self.numIn," files staged in:"
+        print self.numIn," files in stagedIn map:"
         ix=1
         while ix <= self.numIn:
             foo = self.realInFiles[ix]
@@ -456,7 +469,7 @@ class StageSet:
             print foo," --> ",foo2
             ix = ix + 1
             
-        print self.numOut," files staged out:"
+        print self.numOut," files in stageOut map:"
         ix=1
         while ix <= self.numOut:
             foo1 = self.realOutFiles[ix]
@@ -471,3 +484,35 @@ class StageSet:
 
         print '\n\n'
         sys.stdout.flush()
+
+
+    def dumpFileList(self,filename):
+        """@brief Dump a complete list of
+        produced & staged output files to disk - for cleaning up these
+        files during rollback"""
+
+        ## Open/Create disk file
+        try:
+            foo = open(filename,'w')
+        except:
+            log.error("Could not create dumpFileList "+filename+"\n foo = "+foo)
+            return 1
+
+        ## Write full filenames to dump file
+        for item in self.realOutFiles.items():
+            index = item[0]
+            realName = item[1]
+            log.debug("realName= "+realName)
+            foo.write(realName+"\n")
+
+        for item in self.realOutFiles2.items():
+            index = item[0]
+            realName = item[1]
+            if len(realName) > 0:
+                log.debug("realName= "+realName)
+                foo.write(realName+"\n")
+
+        ## close file
+        foo.close()
+        return
+    
