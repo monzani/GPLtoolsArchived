@@ -79,7 +79,7 @@ def init():
 
     if debuglvl == "INFO":
         log.setLevel(logging.INFO)
-        log.info("Setting log level to INFO")
+#        log.info("Setting log level to INFO")
         
 
     if default == "yes":
