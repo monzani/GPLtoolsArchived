@@ -25,20 +25,22 @@ Finally, in any script files called from __main__, one should add the single lin
 import os
 import sys
 
+
 def init():
 ##
 ## Define production directory for module search and logger config
+    default = "yes"
     try:
         GPL2 = os.environ['GPL2']
         GPL2 = GPL2.rstrip('/')   # remove trailing "/", if any
-        print "GPLinit: Using GPLtools from user-specified $GPL2: "
+        default = "no"
         sys.stdout.flush()
-        os.system("ls -ld "+GPL2)
+#        os.system("ls -ld "+GPL2)
+        GPL2o = GPL2
     except KeyError:
         GPL2 = "/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod"
-        print "GPLinit: Using default location for GPLtools: "
-        sys.stdout.flush()
-        os.system("ls -ld "+GPL2)
+#        os.system("ls -ld "+GPL2)
+        GPL2o = GPL2
 
     GPL2 = GPL2 + "/python"
     sys.path.insert(0, GPL2)
@@ -46,11 +48,12 @@ def init():
 
 ## Define (optional) debug directory for module search and logger config
 ##    and, define the logger configuration file
+    GPL_debug = "no"
     try:
         GPL2debug = os.environ['GPL2_DEBUG']
         sys.path.insert(0, GPL2debug)
         configFile = GPL2debug+'/logger.cfg'
-        print "GPLinit: Using $GPL2_DEBUG override location for GPLtools: ",GPL2debug
+        GPL_debug = "yes"
     except KeyError:
         configFile = GPL2+'/logger.cfg'
     sys.stdout.flush()
@@ -60,6 +63,35 @@ def init():
 ## Configure logging facility
     import logging.config
     logging.config.fileConfig(configFile)
+
+
+    import logging
+    log = logging.getLogger("gplLong")
+
+#    log.info("Created logger 'gplLong'")
+    
+    try:
+        debuglvl = os.environ['GPL2_DEBUGLVL']
+    except:
+        debuglvl = "DEBUG"
+
+#    log.info("debuglvl = "+debuglvl)
+
+    if debuglvl == "INFO":
+        log.setLevel(logging.INFO)
+        log.info("Setting log level to INFO")
+        
+
+    if default == "yes":
+        log.debug("Using default location for GPLtools: "+GPL2)
+    else:
+        log.debug("Using GPLtools from user-specified $GPL2 "+GPL2)
+
+    if debuglvl == "DEBUG":os.system("ls -ld "+GPL2o)
+    
+    if GPL_debug == "yes":
+        log.debug("Using $GPL2_DEBUG override location for GPLtools: "+GPL2debug)
+
 
     return
 
