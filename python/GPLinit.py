@@ -45,6 +45,11 @@ def init():
     GPL2 = GPL2 + "/python"
     sys.path.insert(0, GPL2)
 
+    # Add a directory to sys.path that will give us access to the ISOC
+    # installation of the LBL Netlogger package (as
+    # lbl.dsd.netlogger.nllite).
+    sys.path.insert(0, "/afs/slac.stanford.edu/g/glast/isoc/flightOps/volumes/vol1/rhel4_gcc34/install_20070612/lib/python2.5/site-packages/gov/")
+
 
 ## Define (optional) debug directory for module search and logger config
 ##    and, define the logger configuration file

@@ -39,3 +39,8 @@ import PipelineSummary
 #log.debug("import run")
 #from runner import run
 import runner
+
+
+##
+## Set up for ISOC central log.
+from PipelineNetlogger import PNetlogger
