@@ -7,5 +7,11 @@
        @verbatim
        
        v0        21-Mar-07      Initial import
+
+       v1r1      27-Sep-07      runner.run is more verbose.  stageFiles.stageIn 
+       and stageFiles.finish log file sizes and transfer times and rates.  
+       stageFiles.finish has a new option value, 'wipe', which does cleanup but
+       does not copy staged output files to permanent storage.
+       
 */
 

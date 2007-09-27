@@ -10,6 +10,7 @@ refactored: T.Glanzman 2/22/2007
 import os
 import sys
 import shutil
+import time
 
 ## Set up message logging
 import logging
@@ -187,20 +188,32 @@ class StageSet:
         maxtry = 30
         mytry = 1
         while mytry < maxtry:
+
+            stageName = self.stagedName(inFile)
+            start = time.time()
+
             try:
-                stageName = self.stagedName(inFile)
                 shutil.copy(inFile, stageName)
-                self.numIn=self.numIn+1
-                self.realInFiles[self.numIn]=inFile
-                self.inFiles[inFile] = stageName
-                break
-#            except OSError:
+                mytry = maxtry
             except:
                 log.warning('Error copying from '+inFile+' (try '+`mytry`+')')
                 os.system("sleep 2")
                 self.inFiles[inFile] = ""
                 stageName = inFile
                 mytry = mytry+1
+                continue
+            
+            deltaT = time.time() - start
+            size = os.stat(stageName).st_size
+            if deltaT:
+                rate = '%g' % (float(size) / deltaT)
+            else:
+                rate = 'many'
+            log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' % (size, deltaT, rate))
+
+            self.numIn=self.numIn+1
+            self.realInFiles[self.numIn]=inFile
+            self.inFiles[inFile] = stageName
 
         return stageName
 
@@ -241,6 +254,7 @@ class StageSet:
         keep    - no additional function (in anticipation of further file use)
         clean   - +move/delete all staged files (in anticipation of further directory use)
         <null>  - +remove stage directories (full cleanup)
+        wipe    - remove stage directories WITHOUT copying staged files to destination
         """
         log.debug('Entering stage.finish('+option+')')
         rc = 0     # overall
@@ -252,6 +266,10 @@ class StageSet:
         if self.setupOK == 0:
             log.warning("Staging disabled: look only if secondary target needs to receive produced file(s).")
         log.debug("*******************************************")
+
+        if option == 'wipe':
+            log.info('Deleting staging directory without retrieving output files.')
+            return self._removeDir()
 
         # copy stageOut files to their final destinations
         for item in self.realOutFiles.items():
@@ -325,18 +343,8 @@ class StageSet:
 
         # remove stage directory (unless staging is disabled)
         if self.setupOK <> 0:
-            try:
-                os.rmdir(self.stageDir)
-            except:
-                log.warning("Staging directory not empty after cleanup!!")
-                log.warning("Content of staging directory "+self.stageDir)
-                os.system('ls -l '+self.stageDir)
-                log.warning("*** All files & directories will be deleted! ***")
-                try:
-                    shutil.rmtree(self.stageDir)
-                except:
-                    log.error("Could not remove stage directory, "+self.stageDir)
-
+            rc |= self._removeDir()
+            
         self.setupFlag=0
         self.setupOK=0
         self.reset()
@@ -344,6 +352,30 @@ class StageSet:
         return rc
 
 
+    def _removeDir(self):
+
+        # remove stage directory (unless staging is disabled)
+        if self.setupOK <> 0:
+            try:
+                os.rmdir(self.stageDir)
+                rc = 0
+            except:
+                log.warning("Staging directory not empty after cleanup!!")
+                log.warning("Content of staging directory "+self.stageDir)
+                os.system('ls -l '+self.stageDir)
+                log.warning("*** All files & directories will be deleted! ***")
+                try:
+                    shutil.rmtree(self.stageDir)
+                    rc = 0
+                except:
+                    log.error("Could not remove stage directory, "+self.stageDir)
+                    rc = 2
+
+        self.setupFlag=0
+        self.setupOK=0
+        self.reset()
+ 
+        return rc
 
 
     def xrootdCopy(self,fromFile,toFile):
@@ -405,15 +437,26 @@ class StageSet:
         mytry = 1
         rc=0
         while mytry < maxtry:
+            start = time.time()
+
             try:
                 log.info("Executing:\ncp "+fromFile+" "+toFile)
                 shutil.copy(fromFile,toFile)
-                break
+                mytry = maxtry
             except:
                 log.error("Error copying stageOut file to "+toFile+" (try "+`mytry`+")")
                 os.system("sleep 2")
                 mytry = mytry + 1
                 if mytry == maxtry: rc=1
+                continue
+
+            deltaT = time.time() - start
+            size = os.stat(toFile).st_size
+            if deltaT:
+                rate = '%g' % (float(size) / deltaT)
+            else:
+                rate = 'many'
+            log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' % (size, deltaT, rate))
         return rc
 
 
