@@ -457,6 +457,11 @@ class StagedFile(object):
         if autoStart:
             self.start()
             pass
+        self.dumpState()
+        return
+
+    def dumpState(self):
+        log.info('StagedFile 0x%x' % id(self))
         log.info('source: %s' % self.source)
         log.info('location: %s' % self.location)
         log.info('destinations: %s' % self.destinations)
@@ -465,6 +470,7 @@ class StagedFile(object):
         return
 
     def start(self):
+        self.dumpState()
         rc = 0
         if self.source and self.location != self.source and not self.started:
             rc = copy(self.source, self.location)
@@ -473,6 +479,7 @@ class StagedFile(object):
         return rc
 
     def finish(self, keep=False):
+        self.dumpState()
         rc = 0
         for dest in self.destinations:
             rc |= copy(self.location, dest)
@@ -481,7 +488,7 @@ class StagedFile(object):
             log.info('Nuking %s' % self.location)
             os.remove(self.location)
         else:
-            log.info('Not Nuking %s' % self.location)
+            log.info('Not nuking %s' % self.location)
             pass
         return rc
     
