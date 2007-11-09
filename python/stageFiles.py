@@ -115,6 +115,7 @@ class StageSet:
                             stageArea=x
                             log.debug('stageArea defined from default list: '+stageArea)
                             break
+                        
                         else:                           # Try to create stageArea
                             try:
                                 os.makedirs(x)
@@ -125,14 +126,21 @@ class StageSet:
                             except:                     # No luck, revert to $PWD
                                 log.warning("Staging cannot use "+x)
                                 stageArea=os.environ['PWD']
+                                pass
+                            pass
+                        pass
+                    pass
+                pass
+            
             else:
                 log.debug('stageArea defined by constructor argument: '+stageArea)
-    
+                pass
                     
         log.debug("Selected staging root directory = "+stageArea)
 
         if stageName is None:
             stageName = `os.getpid()`    # aim for something unique if not specified
+            pass
  
         self.stageDir = os.path.join(stageArea, stageName)
         log.debug('Targeted staging directory = '+self.stageDir)
@@ -164,7 +172,9 @@ class StageSet:
                 log.warning('Staging disabled: error from os.makedirs: '+self.stageDir)
                 self.stageDir=""
                 self.setupOK=0
-
+                pass
+            pass
+        
         log.debug("os.access = "+`os.access(self.stageDir,os.F_OK)`)
             
         ## Initialize file staging bookkeeping
@@ -228,7 +238,7 @@ class StageSet:
         if not args:
             log.error("Primary stage file not specified")
             return ""
-
+        
         outFile = args[0]
         destinations = args
 
@@ -262,6 +272,7 @@ class StageSet:
             rc |= stagee.start()
             continue
         return rc
+    
 
 
     def finish(self,option=""):
@@ -294,10 +305,11 @@ class StageSet:
         for stagee in self.stagedFiles:
             rc |= stagee.finish(keep)
             continue
-
+    
         if option == "keep": return rc              # Early return #1
 
         # Initialize stage data structures
+        log.info("Initializing internal staging structures")
         self.reset()
 
         if option == "clean": return rc           # Early return #2
@@ -305,7 +317,8 @@ class StageSet:
         # remove stage directory (unless staging is disabled)
         if self.setupOK <> 0:
             rc |= self._removeDir()
-            
+            pass
+        
         self.setupFlag=0
         self.setupOK=0
         self.reset()
@@ -319,6 +332,7 @@ class StageSet:
         if self.setupOK <> 0:
             try:
                 os.rmdir(self.stageDir)
+                log.info("Removed staging directory "+str(self.stageDir))
                 rc = 0
             except:
                 log.warning("Staging directory not empty after cleanup!!")
@@ -331,7 +345,11 @@ class StageSet:
                 except:
                     log.error("Could not remove stage directory, "+self.stageDir)
                     rc = 2
-
+                    pass
+                pass
+            pass
+ 
+    
         self.setupFlag=0
         self.setupOK=0
         self.reset()
@@ -381,64 +399,17 @@ class StageSet:
 
     def dumpStagedFiles(self):
         """@brief Dump names of staged files to stdout"""
-        print '\n\n\tStatus of File Staging System'
-        print 'setupFlag= ',self.setupFlag,', setupOK= ',self.setupOK,', stageDirectory= ',self.stageDir,'\n'
-        print self.numIn," files in stagedIn map:"
-        ix=1
-        while ix <= self.numIn:
-            foo = self.realInFiles[ix]
-            foo2 = self.inFiles.get(foo)
-            print foo," --> ",foo2
-            ix = ix + 1
-            
-        print self.numOut," files in stageOut map:"
-        ix=1
-        while ix <= self.numOut:
-            foo1 = self.realOutFiles[ix]
-            foo2 = self.realOutFiles2[ix]
-            foo3 = self.outFiles.get(foo1)
-            if foo2 == "":
-                print foo1," <-- ",foo3
-            else:
-                print foo1," & "
-                print foo2," <-- ",foo3
-            ix = ix + 1
+        log.info('\n\n\tStatus of File Staging System')
+        log.info('setupFlag= '+str(self.setupFlag)+', setupOK= '+str(self.setupOK)+', stageDirectory= '+str(self.stageDir)+'\n')
+        log.info(str(self.numIn)+" files being staged in")
+        log.info(str(self.numOut)+" files being staged out")
 
-        print '\n\n'
-        sys.stdout.flush()
+        # copy stageOut files to their final destinations
+        for stagee in self.stagedFiles:
+            stagee.dumpState()
+            continue
 
 
-    def dumpFileList(self,filename):
-        """@brief Dump a complete list of
-        produced & staged output files to disk - for cleaning up these
-        files during rollback"""
-
-        ## Open/Create disk file
-        try:
-            foo = open(filename,'w')
-        except:
-            log.error("Could not create dumpFileList "+filename+"\n foo = "+foo)
-            return 1
-
-        ## Write full filenames to dump file
-        for item in self.realOutFiles.items():
-            index = item[0]
-            realName = item[1]
-            log.debug("realName= "+realName)
-            foo.write(realName+"\n")
-
-        for item in self.realOutFiles2.items():
-            index = item[0]
-            realName = item[1]
-            if len(realName) > 0:
-                log.debug("realName= "+realName)
-                foo.write(realName+"\n")
-
-        ## close file
-        foo.close()
-        return
-    
-    pass
 
 
 class StagedFile(object):
@@ -491,11 +462,15 @@ class StagedFile(object):
             log.info('Not nuking %s' % self.location)
             pass
         return rc
-    
     pass
 
 
+
+
 xrootStart = "root:"
+xrootdLocation = os.getenv("GPL_XROOTD_DIR","/afs/slac.stanford.edu/g/glast/applications/xrootd/PROD/bin")
+xrdcp = xrootdLocation+"/xrdcp "
+
 def copy(fromFile, toFile):
     rc = 0
 
@@ -522,8 +497,7 @@ def xrootdCopy(fromFile, toFile):
     rcx1 = 0
     rcx2 = 0
 
-    xrdcp ="~glastdat/bin/xrdcp -np "   #first time try plain copy
-    xrdcmd=xrdcp+fromFile+" "+toFile
+    xrdcmd=xrdcp+" -np "+fromFile+" "+toFile   #first time try plain copy
     log.info("Executing:\n"+xrdcmd)
     # Alternate way to run xrdcp without the error message being displayed
     fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
@@ -540,7 +514,7 @@ def xrootdCopy(fromFile, toFile):
 ##
     if rcx1 != 0:        # This may just mean the file already exists
         #            log.warning("xrdcp failure: rcx1 = "+str(rcx1)+", for file "+toFile)
-        xrdcmd=xrdcp+" -f "+fromFile+" "+toFile #2nd time try overwrite copy
+        xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile #2nd time try overwrite copy
         log.info("Executing:\n"+xrdcmd)
         fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
         foo = fd[2].read()
