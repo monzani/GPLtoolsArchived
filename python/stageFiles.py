@@ -497,41 +497,49 @@ def xrootdCopy(fromFile, toFile):
     rcx1 = 0
     rcx2 = 0
 
-    xrdcmd=xrdcp+" -np "+fromFile+" "+toFile   #first time try plain copy
-    log.info("Executing:\n"+xrdcmd)
-    # Alternate way to run xrdcp without the error message being displayed
-    fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
-    foo = fd[2].read()
-    fd[0].close()
-    fd[1].close()
-    fd[2].close()
-    rcx1 = len(foo)      # If xrdcp emits *any* stderr message, interpret as error
+    log.debug("Looking for "+str(fromFile))
+    if os.access(fromFile,os.R_OK):
+        xrdcmd=xrdcp+" -np "+fromFile+" "+toFile   #first time try plain copy
+        log.info("Executing:\n"+xrdcmd)
+        # Alternate way to run xrdcp without the error message being displayed
+        fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
+        foo = fd[2].read()
+        fd[0].close()
+        fd[1].close()
+        fd[2].close()
+        rcx1 = len(foo)      # If xrdcp emits *any* stderr message, interpret as error
 ##
 ## We must try to copy into xrootd a second time if the first fails.  That is
 ##  because xrdcp has a silly "overwrite" option: it must only be used if the
 ##  file already exists, but not otherwise.  So, in the case we're overwriting
 ##  the first attempt will fail, but the second should succeed.
 ##
-    if rcx1 != 0:        # This may just mean the file already exists
-        #            log.warning("xrdcp failure: rcx1 = "+str(rcx1)+", for file "+toFile)
-        xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile #2nd time try overwrite copy
-        log.info("Executing:\n"+xrdcmd)
-        fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
-        foo = fd[2].read()
-        fd[2].close()
-        fd[1].close()
-        fd[0].close()
-        log.debug("Captured output from xrdcp command:\n"+foo)
-        rcx2 = len(foo)      # If xrdcp emits *any* message, interpret as error
-        log.debug("Length of response = "+str(rcx2))
-                        
-        if rcx2 != 0:     # This is likely a genuine error
-            log.warning("xrdcp -f failure: rcx2 = "+str(rcx2)+", for file "+toFile)
-            log.error("xrootd failure: could not copy file "+fromFile)
-            rc += 1
+        if rcx1 != 0:        # This may just mean the file already exists
+            #            log.warning("xrdcp failure: rcx1 = "+str(rcx1)+", for file "+toFile)
+            xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile #2nd time try overwrite copy
+            log.info("Executing:\n"+xrdcmd)
+            fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
+            foo = fd[2].read()
+            fd[2].close()
+            fd[1].close()
+            fd[0].close()
+            log.debug("Captured output from xrdcp command:\n"+foo)
+            rcx2 = len(foo)      # If xrdcp emits *any* message, interpret as error
+            log.debug("Length of response = "+str(rcx2))
+            
+            if rcx2 != 0:     # This is likely a genuine error
+                log.warning("xrdcp -f failure: rcx2 = "+str(rcx2)+", for file "+toFile)
+                log.error("xrootd failure: could not copy file "+fromFile)
+                rc += 1
+                pass
             pass
-        pass
-    return rc
+        return rc
+    else:
+        log.error("Unable to access "+str(fromFile))
+        return 1
+    pass
+
+
 
 
 def fileCopy(fromFile, toFile):
@@ -549,32 +557,43 @@ def fileCopy(fromFile, toFile):
 ## automount), several attempts are made to copy the input file to
 ## local scratch space.  If that fails, then staging is effectively
 ## disabled for that file.
+    log.debug("Looking for "+str(fromFile))
+    if os.access(fromFile,os.R_OK):
+        while mytry < maxtry:
+            start = time.time()
 
-    while mytry < maxtry:
-        start = time.time()
-
-        try:
-            log.info("Executing:\ncp "+fromFile+" "+toFile)
-            shutil.copy(fromFile,toFile)
-            mytry = maxtry
-        except:
-            log.error("Error copying file to %s (try %d)" %
-                      (toFile, mytry))
-            waitABit()
-            mytry = mytry + 1
-            if mytry == maxtry: rc=1
+            try:
+                log.info("Executing:\ncp "+fromFile+" "+toFile)
+                shutil.copy(fromFile,toFile)
+                mytry = maxtry
+            except:
+                log.error("Error copying file to %s (try %d)" %
+                          (toFile, mytry))
+                waitABit()
+                mytry = mytry + 1
+                if mytry == maxtry: rc=1
+                continue
             continue
-        continue
 
-    deltaT = time.time() - start
-    size = os.stat(toFile).st_size
-    if deltaT:
-        rate = '%g' % (float(size) / deltaT)
+        deltaT = time.time() - start
+        try:
+            size = os.stat(toFile).st_size
+        except:
+            size = 0
+            deltaT = 0
+            pass
+        if deltaT:
+            rate = '%g' % (float(size) / deltaT)
+        else:
+            rate = 'many'
+            pass
+        log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' %
+                 (size, deltaT, rate))
+        return rc
     else:
-        rate = 'many'
-        pass
-    log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' %
-             (size, deltaT, rate))
-    return rc
+        log.error("Unable to access "+str(fromFile))
+        return 1
+    pass
+
 
 
