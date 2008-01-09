@@ -189,6 +189,7 @@ class StageSet:
         self.stagedFiles = []
         self.numIn=0
         self.numOut=0
+        self.numMod=0
         self.xrootdIgnoreErrors = False
 
     def xrootdIgnore(self,flag):
@@ -214,7 +215,7 @@ class StageSet:
             stageName = self.stagedName(inFile)
             pass
         
-        log.info("stageIn for: "+inFile)
+        log.info("\nstageIn for: "+inFile)
 
         inStage = StagedFile(stageName, source=inFile,
                              cleanup=cleanup, autoStart=self.autoStart)
@@ -253,7 +254,7 @@ class StageSet:
             cleanup = False
         else:
             stageName = self.stagedName(outFile)
-            log.info("stageOut for: "+outFile)
+            log.info("\nstageOut for: "+outFile)
             cleanup = True
             pass
 
@@ -264,6 +265,51 @@ class StageSet:
         self.numOut=self.numOut+1
 
         return stageName
+
+
+
+
+
+
+
+
+    def stageMod(self, modFile):
+        """@brief Stage a in a file to be modified and then staged out
+        @param modFile real name of the target file
+        @return name of the staged file
+        """
+        if self.setupFlag <> 1: self.setup()
+
+        if self.setupOK <> 1:
+            log.warning("Stage MOD not available for: "+modFile)
+            return modFile
+        elif self.excludeIn and re.search(self.excludeIn, modFile):
+            log.info("Staging disabled for file '%s' by pattern '%s'." %
+                     (modFile, self.excludeIn))
+            return modFile
+        else:
+            cleanup = True
+            stageName = self.stagedName(modFile)
+            pass
+        
+        log.info("\nstageMod for: "+modFile)
+
+        modStage = StagedFile(stageName, source=modFile, destinations=[modFile],
+                             cleanup=cleanup, autoStart=self.autoStart)
+
+        self.numMod += 1
+        self.stagedFiles.append(modStage)
+
+        return stageName
+
+    
+
+
+
+
+
+
+
 
 
     def start(self):
@@ -372,9 +418,45 @@ class StageSet:
 ### Utilities:  General information about staging and its files
 
 
+    def getChecksums(self,printflag=None):
+        """@brief Return a dictionary of: [stagedOut file name,[length,checksum] ].  Call this after creating file(s), but before finish(), if at all.  If the printflag is set to 1, a brief report will be sent to stdout."""
+        cksums = {}
+        # Compute checksums for all stagedOut files
+        log.info("Calculating 32-bit CRC checksums for stagedOut files")
+        for stagee in self.stagedFiles:
+            if len(stagee.destinations) != 0:
+                file = stagee.location
+                if os.access(file,os.R_OK):
+                    cksum = "cksum "+file
+                    fd = os.popen(cksum,'r')    # Capture output from unix command
+                    foo = fd.read()             # Calculate checksum
+                    rc = fd.close()
+                    if rc != None:
+                        log.warning("Checksum error: return code =  "+str(rc)+" for file "+file)
+                    else:
+                        cksumout = foo.split()
+                        cksums[cksumout[2]] = [cksumout[0],cksumout[1]]
+                        pass
+                else:
+                    log.warning("Checksum error: file does not exist, "+file)
+                    pass
+                pass
+            continue
+# Print report, if requested
+        if int(printflag) = 1:
+            log.info("Checksum report")
+            print "\n"
+            for cksum in cksums:
+                print "Checksum report for file: ",cksum," checksum=",cksums[cksum][0]," bytes=",cksums[cksum][1]
+                pass
+            print "\n"
+            pass
+        return cksums
+
+
+
     def getStageDir(self):
-        """@brief Return the name of the stage directory being used
-        """
+        """@brief Return the name of the stage directory being used"""
         if self.setupOK == 0: return ""
         return self.stageDir
 
@@ -403,11 +485,18 @@ class StageSet:
         log.info('setupFlag= '+str(self.setupFlag)+', setupOK= '+str(self.setupOK)+', stageDirectory= '+str(self.stageDir)+'\n')
         log.info(str(self.numIn)+" files being staged in")
         log.info(str(self.numOut)+" files being staged out")
+        log.info(str(self.numMod)+" files being staged in/out for modification\n")
 
         # copy stageOut files to their final destinations
         for stagee in self.stagedFiles:
             stagee.dumpState()
             continue
+        return
+
+    def dumpFileList(self, mylist):
+        """@brief Dummy for backward compatibility"""
+        print "Entering dumpFileList (dummy method)"
+        return
 
 
 
@@ -416,16 +505,16 @@ class StagedFile(object):
 
     def __init__(self, location, source=None, destinations=[],
                  cleanup=False, autoStart=True):
-        self.source = source
-        self.location = location
-        self.destinations = list(destinations)
-        self.cleanup = cleanup
-        self.started = False
-        if location in self.destinations:
+        self.source = source                   # (stageIn) original file location
+        self.location = location               # temporary file location during job
+        self.destinations = list(destinations) # (stageOut) list of final destinations for file
+        self.cleanup = cleanup                 # cleanup=>remove file at finish()
+        self.started = False                   # (stageIn) file has been copied to scratch area
+        if location in self.destinations:      # prevent shooting self in foot
             self.destinations.remove(location)
             self.cleanup = False
             pass
-        if autoStart:
+        if autoStart:                          # cause files to be stagedIn
             self.start()
             pass
         self.dumpState()
@@ -440,7 +529,7 @@ class StagedFile(object):
         log.info('started: %s' % self.started)
         return
 
-    def start(self):
+    def start(self):                   # copy stagedIn file to temporary working area
         self.dumpState()
         rc = 0
         if self.source and self.location != self.source and not self.started:
@@ -449,7 +538,7 @@ class StagedFile(object):
         self.started = True
         return rc
 
-    def finish(self, keep=False):
+    def finish(self, keep=False):      # copy stagedOut file to final destination(s) & cleanup
         self.dumpState()
         rc = 0
         for dest in self.destinations:
@@ -493,51 +582,55 @@ def xrootdCopy(fromFile, toFile):
     @param fromFile = name of staged file, toFile = name of final file
     @return success code
     """
+    maxtry = 5
+    mytry = 1
     rc = 0
-    rcx1 = 0
-    rcx2 = 0
 
-    log.debug("Looking for "+str(fromFile))
-    if os.access(fromFile,os.R_OK):
-        xrdcmd=xrdcp+" -np "+fromFile+" "+toFile   #first time try plain copy
-        log.info("Executing:\n"+xrdcmd)
-        # Alternate way to run xrdcp without the error message being displayed
-        fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
-        foo = fd[2].read()
-        fd[0].close()
-        fd[1].close()
-        fd[2].close()
-        rcx1 = len(foo)      # If xrdcp emits *any* stderr message, interpret as error
-##
-## We must try to copy into xrootd a second time if the first fails.  That is
-##  because xrdcp has a silly "overwrite" option: it must only be used if the
-##  file already exists, but not otherwise.  So, in the case we're overwriting
-##  the first attempt will fail, but the second should succeed.
-##
-        if rcx1 != 0:        # This may just mean the file already exists
-            #            log.warning("xrdcp failure: rcx1 = "+str(rcx1)+", for file "+toFile)
-            xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile #2nd time try overwrite copy
-            log.info("Executing:\n"+xrdcmd)
-            fd = os.popen3(xrdcmd,'r')    # Capture output from unix command
-            foo = fd[2].read()
-            fd[2].close()
-            fd[1].close()
-            fd[0].close()
-            log.debug("Captured output from xrdcp command:\n"+foo)
-            rcx2 = len(foo)      # If xrdcp emits *any* message, interpret as error
-            log.debug("Length of response = "+str(rcx2))
-            
-            if rcx2 != 0:     # This is likely a genuine error
-                log.warning("xrdcp -f failure: rcx2 = "+str(rcx2)+", for file "+toFile)
-                log.error("xrootd failure: could not copy file "+fromFile)
-                rc += 1
-                pass
+## We should 'stat' the fromFile if it is located in xrootd to verify existence
+
+## We should check that the destination of toFile is writable (no xrootd tool for this)
+
+## We should check if the toFile already exists
+
+    
+# Check that files on standard filesystem are accessible
+    if not fromFile.startswith(xrootStart):
+        if not os.access(fromFile,os.R_OK):
+            log.error("Could not access requested file: "+str(fromFile))
+            return 1
+        pass
+
+    while mytry <= maxtry:
+        if mytry > 1:        ## this happens during a retry
+            log.warning("Retry xrdcp  (mytry = "+str(mytry)+") after a brief pause...")
+            waitABit()       # spin wheels and hope things get better
             pass
-        return rc
+        start = time.time()
+        xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile   #first time try standard copy
+        log.info("Try #"+str(mytry)+": executing...\n"+xrdcmd)
+        rc = os.system(xrdcmd)
+        log.debug("xrdcp return code = "+str(rc))
+        if int(rc) != 0:
+            rc = 0
+            mytry += 1
+            continue
+        else:
+            deltaT = time.time() - start
+            log.info('Transferred file in %g seconds' %
+                     (deltaT))
+            break
+        pass
     else:
-        log.error("Unable to access "+str(fromFile))
-        return 1
-    pass
+        log.error("xrdcp repeatedly failed, setting rc=1")
+        rc=1
+        pass
+    
+## Once the file is purportedly copied, we should 'stat' the file to verify...
+
+    return rc
+
+
+
 
 
 
