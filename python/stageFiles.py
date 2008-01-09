@@ -559,6 +559,7 @@ class StagedFile(object):
 xrootStart = "root:"
 xrootdLocation = os.getenv("GPL_XROOTD_DIR","/afs/slac.stanford.edu/g/glast/applications/xrootd/PROD/bin")
 xrdcp = xrootdLocation+"/xrdcp "
+xrdstat = xrootdLocation+"/xrd.pl stat "
 
 def copy(fromFile, toFile):
     rc = 0
@@ -586,20 +587,25 @@ def xrootdCopy(fromFile, toFile):
     mytry = 1
     rc = 0
 
-## We should 'stat' the fromFile if it is located in xrootd to verify existence
-
-## We should check that the destination of toFile is writable (no xrootd tool for this)
-
-## We should check if the toFile already exists
-
     
-# Check that files on standard filesystem are accessible
-    if not fromFile.startswith(xrootStart):
+# Verify source file is accessible
+    if fromFile.startswith(xrootStart):
+        xrdcmd=xrdstat+fromFile
+        log.info("Verifying existence of "+fromFile)
+        rc = os.system(xrdcmd)
+        log.debug("xrdstat return code = "+str(rc))
+        if int(rc) != 0:
+            log.error("Could not access requested file: "+str(fromFile))
+            return 1
+        pass
+    else:
         if not os.access(fromFile,os.R_OK):
             log.error("Could not access requested file: "+str(fromFile))
             return 1
         pass
 
+
+# Copy source -> destination
     while mytry <= maxtry:
         if mytry > 1:        ## this happens during a retry
             log.warning("Retry xrdcp  (mytry = "+str(mytry)+") after a brief pause...")
@@ -625,7 +631,23 @@ def xrootdCopy(fromFile, toFile):
         rc=1
         pass
     
-## Once the file is purportedly copied, we should 'stat' the file to verify...
+## Verify destination file has been copied
+##   (this is a trivial existence check - more could be done here...)
+    if toFile.startswith(xrootStart):
+        xrdcmd=xrdstat+toFile
+        log.info("Verifying existence of "+toFile)
+        rc = os.system(xrdcmd)
+        log.debug("xrdstat return code = "+str(rc))
+        if int(rc) != 0:
+            log.error("Could not access requested file: "+str(toFile))
+            return 1
+        pass
+    else:
+        if not os.access(toFile,os.R_OK):
+            log.error("Could not access requested file: "+str(toFile))
+            return 1
+        pass
+        
 
     return rc
 
