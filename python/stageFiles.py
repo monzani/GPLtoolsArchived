@@ -443,7 +443,7 @@ class StageSet:
                 pass
             continue
 # Print report, if requested
-        if int(printflag) = 1:
+        if int(printflag) == 1:
             log.info("Checksum report")
             print "\n"
             for cksum in cksums:
