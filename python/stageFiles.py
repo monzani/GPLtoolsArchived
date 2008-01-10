@@ -559,7 +559,7 @@ class StagedFile(object):
 xrootStart = "root:"
 xrootdLocation = os.getenv("GPL_XROOTD_DIR","/afs/slac.stanford.edu/g/glast/applications/xrootd/PROD/bin")
 xrdcp = xrootdLocation+"/xrdcp "
-xrdstat = xrootdLocation+"/xrd.pl stat "
+xrdstat = xrootdLocation+"/xrd.pl -w stat "
 
 def copy(fromFile, toFile):
     rc = 0
