@@ -629,6 +629,7 @@ def xrootdCopy(fromFile, toFile):
     else:
         log.error("xrdcp repeatedly failed, setting rc=1")
         rc=1
+        return rc
         pass
     
 ## Verify destination file has been copied
