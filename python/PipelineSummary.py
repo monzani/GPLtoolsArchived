@@ -14,6 +14,7 @@ $Id$
     mySummary.add("EventsProcessed","41669")
     mySummary.add("TimeElapsed","493829746")
     mySummary.add("TimeInSAA","89334")
+    mySummary.addComment("ScanEnd","===+===+===+===")
     mySummary.write()
 
     This will append the following lines to the specified file:
@@ -21,12 +22,15 @@ $Id$
 Pipeline.EventsProcessed: 41669
 Pipeline.TimeElapsed: 493829746
 Pipeline.TimeInSAA: 89334
+#ScanEnd: ===+===+===+===
 
     These data will then be processed by the Pipeline server and entered into its database.
 
     Note that one may optionally specify a "prefix" as the second argument to the constructor
     which defaults to "Pipeline.", suitable for the Pipeline 2 summary file, but can also
     be set to null for other applications.
+
+    Also note that any line beginning with a "#" or "!" is considered a comment 
 
     @todo proper error checking on summary file (pre-existence, success of write, etc.)
 
@@ -35,7 +39,7 @@ Pipeline.TimeInSAA: 89334
     3/21/2007
     """
 
-# Constructor (specifies name of summary file)
+## Constructor (specifies name of summary file)
     def __init__(self, filename="./pipeline_summary", prefix="Pipeline."):
         self.itemList = []
         self.numItems = 0
@@ -43,34 +47,44 @@ Pipeline.TimeInSAA: 89334
         self.filename = filename
         log.debug('PipelineSummary constructor, filename = '+self.filename)
         return
-
-# Main entry to add new summary datum
+    
+## Main entry to add new summary datum
     def add(self,key,value):
-#        log.debug('entering add(), key= '+key+', value= '+value)
-        self.numItems = self.numItems+1
-        self.itemList.append(self.prefix+key+': '+value+"\n")
+##        log.debug('entering add(), key= '+key+', value= '+value)
+        self.numItems += 1
+        self.itemList.append(self.prefix+str(key)+': '+str(value)+"\n")
         return
-
-# Debugging dump of internal list of summary data
+    
+## Main entry to add new summary datum
+    def addComment(self,key,value):
+##        log.debug('entering comment: key= '+key+', value= '+value)
+        self.numItems += 1
+        self.itemList.append('#'+str(key)+': '+str(value)+'\n')
+        return
+    
+## Debugging dump of internal list of summary data
     def dump(self):
         print 'Dump of current user summary data:'
         print "Summary filename = ",self.filename
         print "Summary item prefix = ",self.prefix
         print "There are ",self.numItems," items in the Summary list."
-#        print self.itemList
+##        print self.itemList
         print "\n----------begin summary----------------------------------"
         for x in self.itemList:
             x = x.strip()
             print x
+            pass
         print "----------end summary----------------------------------\n"
         sys.stdout.flush()
-
-# Write assembled list of summary data to summary file
+        return
+    
+## Write assembled list of summary data to summary file
     def write(self):
         log.debug('entering PipelineSummary.write() to '+self.filename)
-
+        
         log.debug('Number of items in list = '+str(self.numItems))
         self.summary = open(self.filename,'a')
         self.summary.writelines(self.itemList)
         self.summary.close()
         return
+    
