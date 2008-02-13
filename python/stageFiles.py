@@ -14,6 +14,8 @@ import sys
 import shutil
 import time
 
+import runner
+
 ## Set up message logging
 import logging
 log = logging.getLogger("gplLong")
@@ -669,6 +671,8 @@ def fileCopy(fromFile, toFile):
     mytry = 1
     rc=0
 
+    tempName = toFile + '.part'
+
 ## To allow for possible filesystem failures (e.g. delay to
 ## automount), several attempts are made to copy the input file to
 ## local scratch space.  If that fails, then staging is effectively
@@ -679,10 +683,15 @@ def fileCopy(fromFile, toFile):
             start = time.time()
 
             try:
-                log.info("Executing:\ncp "+fromFile+" "+toFile)
-                shutil.copy(fromFile,toFile)
-                mytry = maxtry
-            except:
+                log.info('Starting try %d.' % mytry)
+                rc |= mkdirFor(tempName)
+                log.info("Copying %s to %s " % (fromFile, tempName))
+                shutil.copy(fromFile, tempName)
+                log.info("Renaming %s to %s" % (tempName, toFile))
+                os.rename(tempName, toFile)
+                rc = 0
+                break
+            except: # FIX THIS unconditional except makes debugging hard
                 log.error("Error copying file to %s (try %d)" %
                           (toFile, mytry))
                 waitABit()
@@ -690,6 +699,7 @@ def fileCopy(fromFile, toFile):
                 if mytry == maxtry: rc=1
                 continue
             continue
+        log.info('Scceeded after %d tries' % mytry)
 
         deltaT = time.time() - start
         try:
@@ -713,3 +723,11 @@ def fileCopy(fromFile, toFile):
 
 
 
+def mkdirFor(filePath):
+    status = 0
+    dirPath = os.path.dirname(filePath)
+    if not os.path.isdir(dirPath):
+        log.info('Making directory %s' % dirPath)
+        status |= runner.run('mkdir -p %s' % dirPath)
+        pass
+    return status
