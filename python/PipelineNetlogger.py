@@ -84,7 +84,8 @@ def _metalog(level):
         # By convention Netlogger field names are upper case.
         items = dict((k.upper(), v) for k, v in items.iteritems())
         # Add the standard args to the items dict and call the formatting method.
-        items.update(dict(MSG=msg,
+        items.update(dict(EVNT=evnt,
+                          MSG=msg,
                           TGT=tgt,
                           SCID=scid,
                           LINK=link,
