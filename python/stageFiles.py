@@ -699,7 +699,7 @@ def fileCopy(fromFile, toFile):
                 if mytry == maxtry: rc=1
                 continue
             continue
-        log.info('Scceeded after %d tries' % mytry)
+        log.info('Succeeded after %d tries' % mytry)
 
         deltaT = time.time() - start
         try:
