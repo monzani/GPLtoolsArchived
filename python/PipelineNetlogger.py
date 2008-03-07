@@ -51,7 +51,16 @@ __credits__  = "SLAC"
 
 import datetime, getpass, md5, os, random, re, socket, sys, time, urlparse
 
-from PipelineNetloggerConfig import DEST, LEVEL
+import PipelineNetloggerConfig as Config
+
+# The default port to use for the ISOC logging gateway.
+DEFAULT_PORT = 15502
+
+
+# Types of configuration available. Given to PNetlogger.getLogger().
+class Flavor(object):
+    PROD = "PROD"
+    DEVEL = "DEVEL"
 
 
 def _metalog(level):
@@ -84,13 +93,13 @@ def _metalog(level):
         # By convention Netlogger field names are upper case.
         items = dict((k.upper(), v) for k, v in items.iteritems())
         # Add the standard args to the items dict and call the formatting method.
-        items.update(dict(EVNT=evnt,
+        items.update(dict(EVENT=evnt,
                           MSG=msg,
                           TGT=tgt,
                           SCID=scid,
                           LINK=link,
-                          LVL=level,
-                          DATE=_dt.fromDatetime(timestamp)
+                          LEVEL=level,
+                          UTCTIMESTAMP=_dt.fromDatetime(timestamp),
                           )
                      )
         items.update(self._meta)
@@ -160,19 +169,21 @@ class PNetlogger(object):
         return cls._LAT_EPOCH + datetime.timedelta(seconds=secs, microseconds=usecs)
 
     # The instance initialized with standard parameters.
-    _standardLogger = None
+    _standardLogger = dict((x, None) for x in dir(Flavor) if not x.startswith("__"))
 
     @classmethod
-    def getLogger(cls):
+    def getLogger(cls, flavor = Flavor.PROD):
         """!@brief Return the standard logger instance (always the same one).
+        @param[in] flavor One of the attributes of class Flavor (default PROD).
 
-        There is an instance of PNetlogger available which has been
-        initialized with default values for the logging server
-        locations and for the severity level threshold.
+        There is an instance of PNetlogger available for each possible
+        flavor which has been initialized with default values for the
+        logging server locations and for the severity level threshold.
         """
-        if cls._standardLogger is None:
-            cls._standardLogger = cls(DEST, LEVEL)
-        return cls._standardLogger
+        if cls._standardLogger[flavor] is None:
+            cls._standardLogger[flavor] = cls(getattr(Config, "DEST_" + flavor),
+                                              getattr(Config, "LEVEL_" + flavor))
+        return cls._standardLogger[flavor]
 
 
     def __init__( self, netlogDest, netlogLevel):
@@ -192,7 +203,7 @@ class PNetlogger(object):
                        'USER' : getpass.getuser(),
                        'PROG' : sys.argv[0],
                        'PID'  : os.getpid(),
-                       'GID'  : _uuid(),
+                       'GRIDID'  : _uuid(),
                        }
 
     def setLevel(self, netlogLevel):
@@ -217,7 +228,7 @@ class PNetlogger(object):
     debug = _metalog("DEBUG")
 
     def _format(self, items):
-        level = self._levelNames.index(items['LVL'].upper())
+        level = self._levelNames.index(items['LEVEL'].upper())
         if level < self._logLevel:
             return None
         return ''.join(list(_dictToText(items)))
@@ -231,7 +242,6 @@ class _NetlogdAppender(object):
     def __init__(self, netlogDest):
         # Store the set of tuples (IP addr, port).
         self._destinations = list(_parseNetlogDest(netlogDest))
-        pass
 
     def append(self, msg):
         if msg is None:
@@ -264,10 +274,14 @@ class _NetlogdAppender(object):
 
 def _parseNetlogDest(netlogDest):
     # Generator of tuples (ip addr, port).
-    # netlogDest is of the form "jobs(url-list) scripts(url-list)" or
-    # just a URL list.  We want the URLs for jobs rather than scripts;
-    # URLs without either "jobs" or "scripts" in front of them apply
+    # netlogDest is of the form "jobs(dest-list) scripts(dest-list)" or
+    # just a dest list.  We want the destss for jobs rather than scripts;
+    # dests without either "jobs" or "scripts" in front of them apply
     # to both.
+    # A dest may have the one of the forms:
+    # host
+    # host:
+    # host:port
     forJobs = True
     dests = [d for d in re.split(" +|\(|\)", netlogDest) if d != ""]
     for d in dests:
@@ -276,17 +290,11 @@ def _parseNetlogDest(netlogDest):
         elif d.lower() == "scripts":
             forJobs = False
         elif forJobs:
-            if d.startswith("x-netlog:"):
-                # urlparse does a bad job with non-standard URLs.
-                # So replace 'x-netlog' with 'http'.
-                url = urlparse.urlparse("http" + d[8:])
-                if ":" in url[1]:
-                    host, port = url[1].split(":")
-                else:
-                    raise ValueError("Netlogger URLs must include the port number.")
-                yield (host, int(port))
-            else:
-                raise ValueError("Netlogger URLs must begin with 'x-netlog:'.")
+            if not d.endswith(":"):
+                d += ":"
+            d += str(DEFAULT_PORT)
+            host, port = d.split(":")[:2]
+            yield (host, int(port))
 
 
 def _dictToText(d):
@@ -315,9 +323,7 @@ class _BadKey(Exception):
 
 
 class _dt(datetime.datetime):
-    # Like datetime but str() separates date from time with 'T'.
-    def __str__(self):
-        return self.isoformat()
+    # Now an abbreviation for datetime.datetime.
 
     @classmethod
     def fromDatetime(cls, dt=None):

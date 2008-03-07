@@ -18,5 +18,10 @@ __version__  = "$Revision$"
 __release__  = "$Name$"
 __credits__  = "SLAC"
 
-DEST  = "x-netlog://glastlnx06.slac.stanford.edu:15502"
-LEVEL = "INFO"
+# Production setup. Messages will show up in the Flight page of LogWatcher.
+DEST_PROD  = "glastlnx06:15502 isoc-ops5:15502"
+LEVEL_PROD = "INFO"
+
+# Development. Messages will show the Test page.
+DEST_DEVEL  = "glastlnx25:15502"
+LEVEL_DEVEL = "INFO"
