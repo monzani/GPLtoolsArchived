@@ -43,4 +43,4 @@ import runner
 
 ##
 ## Set up for ISOC central log.
-from PipelineNetlogger import PNetlogger
+from PipelineNetlogger import PNetlogger, Flavor
