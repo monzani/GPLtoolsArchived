@@ -690,6 +690,7 @@ def fileCopy(fromFile, toFile):
                 log.info("Renaming %s to %s" % (tempName, toFile))
                 os.rename(tempName, toFile)
                 rc = 0
+                log.info('Succeeded after %d tries' % mytry)
                 break
             except: # FIX THIS unconditional except makes debugging hard
                 log.error("Error copying file to %s (try %d)" %
@@ -699,7 +700,9 @@ def fileCopy(fromFile, toFile):
                 if mytry == maxtry: rc=1
                 continue
             continue
-        log.info('Succeeded after %d tries' % mytry)
+        if rc:
+            log.info('Failed after %d tries' % mytry)
+            pass
 
         deltaT = time.time() - start
         try:

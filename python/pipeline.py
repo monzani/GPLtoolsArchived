@@ -3,12 +3,12 @@
 """@brief Interface to pipeline functions.
 """
 
+import os
 import sys
 
 import runner
 
 maxVarLength = 1000
-
 def setVariable(varName, value):
     # use bash function
     value = str(value)
@@ -19,7 +19,20 @@ def setVariable(varName, value):
     status = runner.run(cmd)
     return status
 
+
 def createSubStream(subTask, stream=-1, args=''):
     cmd = "pipelineCreateStream %s %s '%s'" % (subTask, stream, args)
     status = runner.run(cmd)
     return status
+
+
+def getProcess():
+    return os.environ['PIPELINE_PROCESS']
+
+
+def getStream():
+    return os.environ['PIPELINE_STREAM']
+
+
+def getTask():
+    return os.environ['PIPELINE_TASK']
