@@ -13,5 +13,8 @@
        stageFiles.finish has a new option value, 'wipe', which does cleanup but
        does not copy staged output files to permanent storage.
        
+
+       v1r9      14-Mar-08      Add getProcess, getTask, getStream functions to 
+       pipeline module.  Tweak failure handling in stageFiles.fileCopy.
 */
 
