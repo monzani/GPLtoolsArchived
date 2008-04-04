@@ -537,6 +537,8 @@ class StagedFile(object):
         if self.source and self.location != self.source and not self.started:
             rc = copy(self.source, self.location)
             pass
+        if rc:
+            raise IOError, "Can't stage in %s" % self.source
         self.started = True
         return rc
 

@@ -16,5 +16,8 @@
 
        v1r9      14-Mar-08      Add getProcess, getTask, getStream functions to 
        pipeline module.  Tweak failure handling in stageFiles.fileCopy.
+
+       v1r10     04-Apr-08      stageFiles.StagedFile.start raises IOError on 
+       failure.
 */
 
