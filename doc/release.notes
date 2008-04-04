@@ -19,5 +19,8 @@
 
        v1r10     04-Apr-08      stageFiles.StagedFile.start raises IOError on 
        failure.
+				Add toXrootdCatalog.py - copy file from local 
+                                disk to xroot and create a dateCatalog entry
+
 */
 
