@@ -117,9 +117,9 @@ else:
 datacatLoc = '/afs/slac.stanford.edu/g/glast/ground/bin/datacat '
 useMeta = ''
 if metaData != 'null': 
-    useMeta = '"' + metaData + '"'
+    useMeta = '-D s"' + metaData + '"'
     
-cmdDatacat = datacatLoc + 'registerDataset -G  ' + group + ' -D s' + useMeta + ' -S SLAC_XROOT ' + inputFileType + ' ' + datacatPath + ' ' + xrootFilePath
+cmdDatacat = datacatLoc + 'registerDataset -G  ' + group + ' ' + useMeta + ' -S SLAC_XROOT ' + inputFileType + ' ' + datacatPath + ' ' + xrootFilePath
 
 if executeThis == 'yes':
     fd = os.popen(cmdDatacat)    # register the file in the data catalogue
