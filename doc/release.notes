@@ -22,5 +22,11 @@
 				Add toXrootdCatalog.py - copy file from local 
                                 disk to xroot and create a dateCatalog entry
 
+       v1r11     25-Jul-08
+       Clean up a corner-case crash in stagefiles cleanup, and try to avoid it 
+       in the first place. [LONE-97@JIRA]
+       Try really hard to avoid creating directories that already exist. 
+       [LONE-96@JIRA]
+
 */
 

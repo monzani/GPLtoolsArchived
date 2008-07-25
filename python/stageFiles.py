@@ -344,7 +344,9 @@ class StageSet:
         if option == 'wipe':
             log.info(
                 'Deleting staging directory without retrieving output files.')
-            return self._removeDir()
+            if self.setupOK <> 0:
+                return self._removeDir()
+            pass
         elif option == 'keep':
             keep = True
             pass
@@ -375,6 +377,8 @@ class StageSet:
 
 
     def _removeDir(self):
+
+        rc = 0
 
         # remove stage directory (unless staging is disabled)
         if self.setupOK <> 0:
@@ -733,6 +737,45 @@ def mkdirFor(filePath):
     dirPath = os.path.dirname(filePath)
     if not os.path.isdir(dirPath):
         log.info('Making directory %s' % dirPath)
-        status |= runner.run('mkdir -p %s' % dirPath)
+        #status |= runner.run('mkdir -p %s' % dirPath)
+        makedirs(dirPath)
         pass
     return status
+
+
+def makedirs(name, mode=0777):
+    """makedirs(path [, mode=0777])
+
+    Super-mkdir; create a leaf directory and all intermediate ones.
+    Works like mkdir, except that any intermediate path segment (not
+    just the rightmost) will be created if it does not exist.  This is
+    recursive.
+
+    This is a modified version of os.makedirs that's more careful to not
+    try to make directories that already exist.
+
+    """
+    from errno import EEXIST
+    head, tail = os.path.split(name)
+    if not tail:
+        head, tail = os.path.split(head)
+    if head and tail and not os.path.exists(head):
+        try:
+            makedirs(head, mode)
+        except OSError, e:
+            # be happy if someone already created the path
+            if e.errno != EEXIST:
+                raise
+        if tail == os.curdir:     # xxx/newdir/. exists if xxx/newdir exists
+            return
+    if not os.path.exists(name):
+        try:
+            os.mkdir(name, mode)
+        except OSError, e:
+            # be happy if someone already created the path
+            if e.errno != EEXIST:
+                raise
+            pass
+        pass
+    return
+
