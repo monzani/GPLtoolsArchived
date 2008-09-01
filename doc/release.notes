@@ -28,5 +28,15 @@
        Try really hard to avoid creating directories that already exist. 
        [LONE-96@JIRA]
 
+		26-Aug-08
+	Add New feature to stageOut: by specifying a destination
+	as the string "SCRATCH", then the stagedFile.finish()
+	method will do no copying of that file anywhere - it will be
+	deleted.  The motivation is to allow
+	temporary intermediate files a formal place in the staging
+	system, e.g., the generation of RECON files by Gleam for the
+	purpose of creating the SVAC ntuple, but with no intention of
+	preserving the RECON file.
+
 */
 

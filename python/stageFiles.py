@@ -549,9 +549,15 @@ class StagedFile(object):
     def finish(self, keep=False):      # copy stagedOut file to final destination(s) & cleanup
         self.dumpState()
         rc = 0
-        for dest in self.destinations:
-            rc |= copy(self.location, dest)
-            continue
+        if not 'SCRATCH' in self.destinations:
+            for dest in self.destinations:
+                rc |= copy(self.location, dest)
+                continue
+            pass
+        else:
+            log.info('File declared scratch, not copying to destination: '+self.destinations[0])
+            pass
+        
         if not keep and self.cleanup and os.access(self.location, os.W_OK):
             log.info('Nuking %s' % self.location)
             os.remove(self.location)
