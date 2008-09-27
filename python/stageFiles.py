@@ -14,6 +14,7 @@ import sys
 import shutil
 import time
 
+import cpck
 import runner
 
 ## Set up message logging
@@ -698,7 +699,9 @@ def fileCopy(fromFile, toFile):
                 log.info('Starting try %d.' % mytry)
                 rc |= mkdirFor(tempName)
                 log.info("Copying %s to %s " % (fromFile, tempName))
-                shutil.copy(fromFile, tempName)
+                # shutil.copy(fromFile, tempName)
+                checksum = cpck.dumbSum(fromFile, tempName)
+                log.info('Checksum = %s' % checksum)
                 log.info("Renaming %s to %s" % (tempName, toFile))
                 os.rename(tempName, toFile)
                 rc = 0

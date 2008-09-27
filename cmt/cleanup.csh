@@ -6,6 +6,6 @@ set tempfile=`${CMTROOT}/mgr/cmt -quiet build temporary_name`
 if $status != 0 then
   set tempfile=/tmp/cmt.$$
 endif
-${CMTROOT}/mgr/cmt cleanup -csh -pack=GPLtools -version=v1r10 -path=/home/focke/cvs $* >${tempfile}; source ${tempfile}
+${CMTROOT}/mgr/cmt cleanup -csh -pack=GPLtools -version=v1r12 -path=/a/surrey01/vol/vol2/g.svac/focke/L1/gpl $* >${tempfile}; source ${tempfile}
 /bin/rm -f ${tempfile}
 

@@ -38,5 +38,9 @@
 	purpose of creating the SVAC ntuple, but with no intention of
 	preserving the RECON file.
 
+       v1r13     28-Sep-08
+       stageFiles.fileCopy calculates the md5 checksum of files on the fly,
+       and logs it.
+
 */
 
