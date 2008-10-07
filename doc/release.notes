@@ -42,5 +42,12 @@
        stageFiles.fileCopy calculates the md5 checksum of files on the fly,
        and logs it.
 
+       v1r13p1
+       Forgot to add a file.
+
+       v1r14    07-Oct-08
+       Log exceptions when stageFiles.fileCopy fails (and generally rearrange 
+       the function a bit).
+
 */
 

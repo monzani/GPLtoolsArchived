@@ -139,6 +139,8 @@ class readIt(object):
     pass
 
 
+copyAndSum = dumbSum
+
 
 if __name__ == "__main__":
     main()

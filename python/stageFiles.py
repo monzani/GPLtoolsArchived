@@ -681,7 +681,6 @@ def fileCopy(fromFile, toFile):
     @return success code
     """
     maxtry = 5
-    mytry = 1
     rc=0
 
     tempName = toFile + '.part'
@@ -690,42 +689,47 @@ def fileCopy(fromFile, toFile):
 ## automount), several attempts are made to copy the input file to
 ## local scratch space.  If that fails, then staging is effectively
 ## disabled for that file.
-    log.debug("Looking for "+str(fromFile))
-    if os.access(fromFile,os.R_OK):
-        while mytry < maxtry:
+    log.debug("Looking for " + str(fromFile))
+    if not os.access(fromFile, os.R_OK):
+        log.error("Unable to access "+str(fromFile))
+        return 1
+    else:
+        for mytry in range(1, maxtry+1):
+            if mytry > 1: waitABit()
+            rc = 0
             start = time.time()
-
             try:
                 log.info('Starting try %d.' % mytry)
                 rc |= mkdirFor(tempName)
                 log.info("Copying %s to %s " % (fromFile, tempName))
                 # shutil.copy(fromFile, tempName)
-                checksum = cpck.dumbSum(fromFile, tempName)
+                checksum = cpck.copyAndSum(fromFile, tempName)
                 log.info('Checksum = %s' % checksum)
                 log.info("Renaming %s to %s" % (tempName, toFile))
                 os.rename(tempName, toFile)
-                rc = 0
-                log.info('Succeeded after %d tries' % mytry)
                 break
-            except: # FIX THIS unconditional except makes debugging hard
-                log.error("Error copying file to %s (try %d)" %
-                          (toFile, mytry))
-                waitABit()
-                mytry = mytry + 1
-                if mytry == maxtry: rc=1
+            except:
+                ex, exInfo, traceBack = sys.exc_info()
+                rc = 1
+                log.error("Error copying file to %s (try %d): %s" %
+                          (toFile, mytry, exInfo))
                 continue
             continue
         if rc:
             log.info('Failed after %d tries' % mytry)
-            pass
+            return rc
 
         deltaT = time.time() - start
+        
+        log.info('Succeeded after %d tries' % mytry)
+
         try:
             size = os.stat(toFile).st_size
         except:
-            size = 0
-            deltaT = 0
-            pass
+            ex, exInfo, traceBack = sys.exc_info()
+            log.error("Can't stat file %s: %s" % (toFile, exInfo))
+            return 1
+
         if deltaT:
             rate = '%g' % (float(size) / deltaT)
         else:
@@ -733,11 +737,11 @@ def fileCopy(fromFile, toFile):
             pass
         log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' %
                  (size, deltaT, rate))
-        return rc
-    else:
-        log.error("Unable to access "+str(fromFile))
-        return 1
-    pass
+
+        pass
+    
+    return rc
+
 
 
 
