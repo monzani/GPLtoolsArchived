@@ -2,6 +2,7 @@
 
 import hashlib
 import optparse
+import random
 import os
 import sys
 import threading
@@ -9,8 +10,8 @@ import time
 import Queue
 
 
-defaultBlock = 2**15
-defaultPool = 2**20
+defaultBlock = 2**20
+defaultPool = 2**25
 defaultDepth = defaultPool / defaultBlock
 
 def timeCopy(fun, inFile, outFile):
@@ -28,7 +29,13 @@ def main():
     parser = optparse.OptionParser()
     options, args = parser.parse_args()
     inFile, outFile = args
-    for fun in [threadCopy, osCopy, dumbCopy, osSumI, osSumO, dumbSum]:
+    testSpeed(inFile, outFile)
+    return
+
+def testSpeed(inFile, outFile):
+    myFuns = list(funs)
+    random.shuffle(myFuns)
+    for fun in myFuns:
         cmd = 'fs flush %s' % inFile
         os.system(cmd)
         result = timeCopy(fun, inFile, outFile)
@@ -36,6 +43,7 @@ def main():
         #print result
         continue
     return
+
 
 
 def writer(ofp, q):
@@ -138,6 +146,7 @@ class readIt(object):
 
     pass
 
+funs = [threadCopy, osCopy, dumbCopy, osSumI, osSumO, dumbSum]
 
 copyAndSum = dumbSum
 
