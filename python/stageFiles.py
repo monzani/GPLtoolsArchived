@@ -573,8 +573,9 @@ class StagedFile(object):
 
 xrootStart = "root:"
 xrootdLocation = os.getenv("GPL_XROOTD_DIR","/afs/slac.stanford.edu/g/glast/applications/xrootd/PROD/bin")
-xrdcp = xrootdLocation+"/xrdcp "
-xrdstat = xrootdLocation+"/xrd.pl -w stat "
+xrdcp    = xrootdLocation+"/xrdcp "
+xrdstat  = xrootdLocation+"/xrd.pl -w stat "
+xrdrm    = xrootdLocation+"/xrd.pl rm "
 
 def copy(fromFile, toFile):
     rc = 0
@@ -617,6 +618,16 @@ def xrootdCopy(fromFile, toFile):
         if not os.access(fromFile,os.R_OK):
             log.error("Could not access requested file: "+str(fromFile))
             return 1
+        pass
+
+
+    ## The following kludge is necessary (11/4/2008) due to bug in xrdcp
+    ##  wherein overwriting an existing file on a "full" server will fail
+    ##  The fix is to first delete the file.  
+    if toFile.startswith(xrootStart):
+        log.debug("Attempting to remove destination file")
+        xrdcmd = xrdrm+toFile
+        rc = os.system(xrdcmd)  ## failure is Okay => file does not already exist
         pass
 
 

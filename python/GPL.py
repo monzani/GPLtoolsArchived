@@ -16,10 +16,7 @@ import shutil
 ## "loge" sends messages to sys.stderr
 import logging
 log = logging.getLogger("gplLong")
-#log.debug("Established message logger")
 loge = logging.getLogger("gple")
-
-
 
 ##
 ## Setup for file staging
