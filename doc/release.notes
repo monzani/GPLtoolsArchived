@@ -49,5 +49,14 @@
        Log exceptions when stageFiles.fileCopy fails (and generally rearrange 
        the function a bit).
 
+	v1r15  17 Nov 2008 (TG)
+	stageFiles now attempts to delete a file before copying it
+	into xroot (this is hopefully a temporary workaround to a
+	long-standing problem wherein overwriting failed if the original file
+	resided on a "full" server.
+
+	Small change to logger.cfg to correct a problem with the
+	gplLong logger's qualname parameter.
+
 */
 
