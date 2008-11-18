@@ -58,5 +58,8 @@
 	Small change to logger.cfg to correct a problem with the
 	gplLong logger's qualname parameter.
 
+	v1r15p1 18 Nov 2008 (TG)
+	Change from 'simple' back to 'detailed' formatter for routine logging messages
+
 */
 
