@@ -1,0 +1,1530 @@
+------------------------------------------------------------
+TAG
+Tag name: v1r15, operation: add
+Package: GPLtools
+User: dragon  Mon Nov 17 09:12:37 2008
+Files:
+  GPLtools/ChangeLog  1.97
+  GPLtools/cmt/setup.csh  1.11
+  GPLtools/cmt/cleanup.csh  1.11
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.11
+  GPLtools/cmt/setup.sh  1.11
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.10
+  GPLtools/python/GPL.py  1.7
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/cpck.py  1.3
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.5
+  GPLtools/python/stageFiles.py  1.28
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Nov 17 09:12:06 PST 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Nov 17 09:06:23 PST 2008
+GPLtools/python
+
+Modified Files:
+	GPL.py logger.cfg stageFiles.py 
+Log Message:
+One change to logger.cfg to fix an apparent bug in the qualname
+parameter of the gplLong logger.
+
+A hopefully temporary change to the stageFiles.py so that before a
+file is written to xroot, it is first deleted.  This gets around a
+problem with xroot that caused an error if an existing file happened
+to reside on a "full" xroot server.  Andy and Fabrizio (xroot
+developers) have agreed that a future release will change the behavior
+file overwriting to avoid this situation.
+
+
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r14p1, operation: add
+Package: GPLtools
+User: focke  Fri Oct 10 17:10:29 2008
+Files:
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/cpck.py  1.3
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.27
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Fri Oct 10 17:10:17 PDT 2008
+GPLtools/python
+
+Modified Files:
+	cpck.py 
+Log Message:
+Increase copy/sum block size from 32kB to 1MB.
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r14, operation: add
+Package: GPLtools
+User: focke  Tue Oct  7 15:24:02 2008
+Files:
+  GPLtools/ChangeLog  1.90
+  GPLtools/cmt/setup.csh  1.11
+  GPLtools/cmt/cleanup.csh  1.11
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.11
+  GPLtools/cmt/setup.sh  1.11
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.9
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/cpck.py  1.2
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.27
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Tue Oct  7 15:23:15 PDT 2008
+GPLtools/python
+
+Modified Files:
+	cpck.py stageFiles.py 
+Log Message:
+Log exceptions when stageFiles.fileCopy fails.
+    *
+------------------------------------------------------------
+User: focke  Tue Oct  7 15:23:14 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Log exceptions when stageFiles.fileCopy fails.
+    *
+------------------------------------------------------------
+User: focke  Tue Oct  7 15:23:14 PDT 2008
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Log exceptions when stageFiles.fileCopy fails.
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r13p1, operation: add
+Package: GPLtools
+User: focke  Sat Sep 27 16:17:03 2008
+Files:
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/cpck.py  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.26
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Sat Sep 27 16:16:28 PDT 2008
+GPLtools/python
+
+Added Files:
+	cpck.py 
+Log Message:
+forgot to add a file to v1r13
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r13, operation: add
+Package: GPLtools
+User: focke  Sat Sep 27 13:30:23 2008
+Files:
+  GPLtools/ChangeLog  1.84
+  GPLtools/cmt/setup.csh  1.10
+  GPLtools/cmt/cleanup.csh  1.10
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.10
+  GPLtools/cmt/setup.sh  1.10
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.8
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.26
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Sat Sep 27 13:30:14 PDT 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+v1r13
+    *
+------------------------------------------------------------
+User: focke  Sat Sep 27 13:30:13 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+v1r13
+    *
+------------------------------------------------------------
+User: focke  Sat Sep 27 13:30:13 PDT 2008
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+v1r13
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r12, operation: add
+Package: GPLtools
+User: dragon  Mon Sep  1 07:57:06 2008
+Files:
+  GPLtools/ChangeLog  1.81
+  GPLtools/cmt/setup.csh  1.9
+  GPLtools/cmt/cleanup.csh  1.9
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.9
+  GPLtools/cmt/setup.sh  1.9
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.7
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.25
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Sep  1 07:54:39 PDT 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Added provision for creating interemediate scratch files in the file staging area.
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Sep  1 07:54:12 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Added provision for creating interemediate scratch files in the file staging area.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r11, operation: add
+Package: GPLtools
+User: focke  Fri Jul 25 09:48:51 2008
+Files:
+  GPLtools/ChangeLog  1.77
+  GPLtools/cmt/setup.csh  1.9
+  GPLtools/cmt/cleanup.csh  1.9
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.9
+  GPLtools/cmt/setup.sh  1.9
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.6
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.24
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Fri Jul 25 09:48:42 PDT 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+v1r11
+    *
+------------------------------------------------------------
+User: focke  Fri Jul 25 09:48:42 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+v1r11
+    *
+------------------------------------------------------------
+User: focke  Fri Jul 25 09:48:41 PDT 2008
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+v1r11
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r10, operation: add
+Package: GPLtools
+User: focke  Fri Apr  4 15:46:57 2008
+Files:
+  GPLtools/ChangeLog  1.76
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.5
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/toXrootdCatalog.py  1.2
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.23
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: dragon  Fri Apr  4 15:17:46 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+
+    *
+------------------------------------------------------------
+User: focke  Fri Apr  4 15:06:25 PDT 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+stageFiles.StagedFile.start raises IOError on failure
+    *
+------------------------------------------------------------
+User: focke  Fri Apr  4 15:06:23 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+stageFiles.StagedFile.start raises IOError on failure
+    *
+------------------------------------------------------------
+User: dragon  Fri Apr  4 09:16:11 PDT 2008
+GPLtools/python
+
+Modified Files:
+	toXrootdCatalog.py 
+Log Message:
+
+
+    *
+------------------------------------------------------------
+User: dragon  Thu Apr  3 15:59:09 PDT 2008
+GPLtools/python
+
+Added Files:
+	toXrootdCatalog.py 
+Log Message:
+Add new script to copy files from local/remote disk into xrootd, AND make appropriate dataCatalog registration.  (Richard Dubois is the author, I'm just acting as his proxy)
+
+
+    *
+------------------------------------------------------------
+User: focke  Fri Mar 14 17:23:00 PDT 2008
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r9, operation: add
+Package: GPLtools
+User: focke  Fri Mar 14 17:18:09 2008
+Files:
+  GPLtools/ChangeLog  1.68
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.6
+  GPLtools/python/PipelineNetloggerConfig.py  1.2
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.2
+  GPLtools/python/PipelineNetlogger.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.22
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: focke  Fri Mar 14 17:17:43 PDT 2008
+GPLtools/python
+
+Modified Files:
+	pipeline.py stageFiles.py 
+Log Message:
+Add a few more functions to pipeline module.  Tweak failure handling in stageFiles.fileCopy.
+    *
+------------------------------------------------------------
+User: tether  Tue Mar 11 10:21:19 PDT 2008
+GPLtools/python
+
+Modified Files:
+	GPL.py 
+Log Message:
+Forgot to import Flavor.
+
+    *
+------------------------------------------------------------
+User: tether  Fri Mar  7 15:54:06 PST 2008
+GPLtools/python
+
+Modified Files:
+	PipelineNetloggerConfig.py PipelineNetlogger.py 
+Log Message:
+Compatible with ISOC 4.4.0 (see JIRA ICS-622).
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r8, operation: add
+Package: GPLtools
+User: dragon  Tue Feb 26 09:59:32 2008
+Files:
+  GPLtools/ChangeLog  1.64
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/GPLinit.py  1.10
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/pipeline.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.21
+  GPLtools/python/PipelineSummary.py  1.6
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Feb 26 09:56:14 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+trivial spelling correction in log message
+
+    *
+------------------------------------------------------------
+User: tether  Wed Feb 13 15:55:43 PST 2008
+GPLtools/python
+
+Modified Files:
+	PipelineNetlogger.py 
+Log Message:
+Forgot the EVNT field of each message.
+
+    *
+------------------------------------------------------------
+User: focke  Wed Feb 13 08:57:51 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Added Files:
+	pipeline.py 
+Log Message:
+stageFiles.fileCopy creates destination directories if necessary, and uses a temporary name while copying files to their destinations.  Add pipeline module.
+    *
+------------------------------------------------------------
+User: tether  Mon Feb 11 17:58:28 PST 2008
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+No more need to import nllite from LBL.
+
+    *
+------------------------------------------------------------
+User: tether  Mon Feb 11 17:49:43 PST 2008
+GPLtools/python
+
+Modified Files:
+	PipelineNetlogger.py 
+Log Message:
+Added the 'link' and 'tag_X' keywords to the logging calls. This
+module no longer requires the nllite package from LBL. Reorganized the
+Doxygen comments.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r7, operation: add
+Package: GPLtools
+User: dragon  Thu Jan 24 08:14:30 2008
+Files:
+  GPLtools/ChangeLog  1.58
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/stageFiles.py  1.19
+  GPLtools/python/PipelineSummary.py  1.6
+  GPLtools/python/runner.py  1.2
+
+    *
+------------------------------------------------------------
+User: dragon  Thu Jan 24 08:13:59 PST 2008
+GPLtools/python
+
+Modified Files:
+	PipelineSummary.py 
+Log Message:
+Added new member function, addComment(), which allows one to add comment text strings to the pipeline_summary file and which then do not propagate into the Pipeline DB.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r6, operation: add
+Package: GPLtools
+User: dragon  Mon Jan 14 13:54:59 2008
+Files:
+  GPLtools/ChangeLog  1.56
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/stageFiles.py  1.19
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.2
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Jan 14 13:54:47 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Correct bug in xrootdCopy in which the return code for a repeatedly failed attempt to xrdcp was not properly handed back to the calling code.
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r5, operation: add
+Package: GPLtools
+User: dragon  Thu Jan 10 08:27:00 2008
+Files:
+  GPLtools/ChangeLog  1.54
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/stageFiles.py  1.18
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.2
+
+    *
+------------------------------------------------------------
+User: dragon  Thu Jan 10 08:20:06 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+An improvement to xrootdCopy() method wherein the file verification (xrd.pl stat) has been modified to also report the physical file server containing the file (the "-w" option) for improved diagnostics.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r4, operation: add
+Package: GPLtools
+User: dragon  Wed Jan  9 14:56:18 2008
+Files:
+  GPLtools/ChangeLog  1.52
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/stageFiles.py  1.17
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.2
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Jan  9 14:54:45 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+xrootdCopy() method now uses the "xrd.pl stat" command to verify the
+existence of xrootd files prior to staging in or after staging out.
+I hope this helps with the problem of silent failures of files written
+to xrootd.
+
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Jan  8 16:54:36 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+correct typo in previous commit
+
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Jan  8 16:49:57 PST 2008
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Several changes to the staging code.
+
+1. new stageMod() method declares files that will be modified and
+written back to their original destinations.  This bad idea was
+implemented to be used with some of the science tools.
+
+2. new getChecksums() method to compute and return 32-bit CRC checksum
+(and file size) using the unix cksum command.
+
+3. xrootdCopy() method modifications:
+
+  a. eliminates the "xrdcp"/"xrdcp -f" sequence as Wilko says the -f option 
+     may now be used at all times,whether the target file already exists or not
+  b. the xrdcp command is tried several times (maxtry=5) to work around transient system errors.
+  c. uses xrdcp return code rather than returned character string as error indication
+  d. one may now stageIn (as well as stageOut or stageMod) xrootd files
+
+Note: there are still several improvements for xrootdCopy waiting in
+the wings to make it more reliable.
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r3, operation: add
+Package: GPLtools
+User: dragon  Sat Nov 10 14:40:57 2007
+Files:
+  GPLtools/ChangeLog  1.48
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.14
+  GPLtools/python/PipelineSummary.py  1.5
+
+    *
+------------------------------------------------------------
+User: dragon  Sat Nov 10 14:40:30 PST 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+finish() now checks on existence of files to be staged out (moved from /scratch after job completion); if file does not exist, returns immediately with error.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r2, operation: add
+Package: GPLtools
+User: dragon  Fri Nov  9 15:51:21 2007
+Files:
+  GPLtools/ChangeLog  1.46
+  GPLtools/cmt/setup.csh  1.8
+  GPLtools/cmt/cleanup.csh  1.8
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.8
+  GPLtools/cmt/setup.sh  1.8
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.9
+  GPLtools/python/stageFiles.py  1.13
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.2
+
+    *
+------------------------------------------------------------
+User: dragon  Fri Nov  9 08:58:34 PST 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Four modifications:
+1. add log.info message when scratch directory is removed
+2. remove obsolete method to write out list of stage-out files
+3. modify dumpStagedFiles method to use new list of StagedFile objects
+4. update xrootd code location.  Can now use default or override with $GPL_XROOTD_DIR
+
+
+    *
+------------------------------------------------------------
+User: focke  Thu Nov  8 15:18:42 PST 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+StagedFile.dumpState tweaks.
+    *
+------------------------------------------------------------
+User: focke  Tue Nov  6 14:32:30 PST 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Refactored to allow non-staging of some files.
+    *
+------------------------------------------------------------
+User: focke  Tue Nov  6 14:32:29 PST 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Refactored to allow non-staging of some files.
+    *
+------------------------------------------------------------
+User: tether  Thu Oct 18 15:56:30 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+Corrected the path to Netlogger - this one is more stable.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r1, operation: add
+Package: GPLtools
+User: focke  Thu Sep 27 13:47:00 2007
+Files:
+  GPLtools/ChangeLog  1.38
+  GPLtools/cmt/setup.csh  1.7
+  GPLtools/cmt/cleanup.csh  1.7
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.7
+  GPLtools/cmt/setup.sh  1.7
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.2
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/GPLinit.py  1.8
+  GPLtools/python/runner.py  1.2
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/stageFiles.py  1.10
+  GPLtools/python/PipelineSummary.py  1.5
+
+    *
+------------------------------------------------------------
+User: focke  Thu Sep 27 13:46:44 PDT 2007
+GPLtools/python
+
+Modified Files:
+	runner.py stageFiles.py 
+Log Message:
+v1r1
+    *
+------------------------------------------------------------
+User: focke  Thu Sep 27 13:46:43 PDT 2007
+GPLtools/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+v1r1
+    *
+------------------------------------------------------------
+User: focke  Thu Sep 27 13:46:43 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+v1r1
+    *
+------------------------------------------------------------
+TAG
+Tag name: v1r0, operation: add
+Package: GPLtools
+User: dragon  Fri Sep 21 14:06:39 2007
+Files:
+  GPLtools/ChangeLog  1.37
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.5
+  GPLtools/python/.cvsignore  1.1
+  GPLtools/python/PipelineNetloggerConfig.py  1.1
+  GPLtools/python/PipelineNetlogger.py  1.1
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.8
+  GPLtools/python/stageFiles.py  1.9
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: tether  Thu Sep 13 14:04:57 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py GPL.py 
+Added Files:
+	PipelineNetloggerConfig.py PipelineNetlogger.py 
+Log Message:
+Add the ability to use the ISOC logging facility (ISOC Core JIRA
+ICS-210).
+
+    *
+------------------------------------------------------------
+User: tether  Thu Sep 13 14:03:09 PDT 2007
+GPLtools/python
+
+Added Files:
+	.cvsignore 
+Log Message:
+Ignore byte-code files.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r15, operation: add
+Package: GPLtools
+User: dragon  Thu Jul 19 16:15:59 2007
+Files:
+  GPLtools/ChangeLog  1.33
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.7
+  GPLtools/python/stageFiles.py  1.9
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Thu Jul 19 16:15:44 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+Removed one (hopefully last) gratuitous message...
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r14, operation: add
+Package: GPLtools
+User: dragon  Thu Jul 19 16:10:42 2007
+Files:
+  GPLtools/ChangeLog  1.31
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.6
+  GPLtools/python/stageFiles.py  1.9
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Thu Jul 19 16:10:24 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+Improved GPLinit such that:
+1) no gratuitous print statements (all done via message logger)
+2) introduced new GPL2_DEBUGLVL to handle initial msg level, including GPLinit message levels (note:currently only handled DEBUG [default] and INFO)
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r13, operation: add
+Package: GPLtools
+User: dragon  Tue Jul 17 16:59:47 2007
+Files:
+  GPLtools/ChangeLog  1.30
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.9
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Jul 17 16:54:06 PDT 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Fixed one problem in stage and added one new feature.  The problem was
+that when staging was not possible (e.g., running on a noma with full
+/scratch), then the copying of files into xrootd (the "secondary"
+target for a stageOut file) was not performed.  Now, the stageOut map
+is filled even when no staging is actually done and when finish() is
+called, the secondary target (typically xrootd) gets its copy.
+
+The new feature is a function called dumpFileList(filename) which
+dumps the actual (final) file names of all anticipated output files.
+The use is to produce this during a pipeline line job and store the
+file in the working directory; if the stream is rolled back, this file
+can be read and the associated output files cleaned up.
+
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r12, operation: add
+Package: GPLtools
+User: dragon  Thu May 31 10:46:12 2007
+Files:
+  GPLtools/ChangeLog  1.26
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.8
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r11, operation: add
+Package: GPLtools
+User: dragon  Thu May 31 10:46:01 2007
+Files:
+
+    *
+------------------------------------------------------------
+User: dragon  Thu May 31 10:45:49 PDT 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Fix bug in stageFiles which prevented completion of stageOut list upon encountering an item for which there was no xrootd destination.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r11, operation: add
+Package: GPLtools
+User: dragon  Thu May 31 10:43:04 2007
+Files:
+  GPLtools/ChangeLog  1.23
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.7
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r10, operation: add
+Package: GPLtools
+User: dragon  Thu May 17 13:36:30 2007
+Files:
+  GPLtools/ChangeLog  1.23
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.7
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Thu May 17 13:34:25 PDT 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+1) Refactored the algorithm for handling xrootd files.  The user
+interface is backward compatible, but it is advised to use the new way
+of declaring an xrootd file to stageOut:
+
+Old way:
+
+sOut1  = stageSet.stageOut("/u/ec/dragon/pythontests/stage/myoutfile1.txt")
+sOut1x = stageSet.stageOut("root://glast-rdr//glast/mc/junk/myoutfile1.txt")
+
+(declare the same file (i.e., same basename) twice, once for the
+standard file system and again for xrootd)
+
+New way:
+
+sOut1 = stageSet.stageOut("/u/ec/dragon/pythontests/stage/myoutfile1.txt","root://glast-rdr//glast/mc/junk/myoutfile11.txt")
+
+
+The old way produced false warning messages when attempting to remove
+the local stage file twice (once for each stageOut() invocation).
+
+2) Improved the error detection and handling for xrootd errors.  One may also elect to ignore xrootd copy errors (e.g., during evaluation) by invoking 
+
+stageSet.xrootdIgnore(True)
+
+3) Miscellaneous other cleanup
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r9, operation: add
+Package: GPLtools
+User: dragon  Fri May 11 14:27:00 2007
+Files:
+  GPLtools/ChangeLog  1.21
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.4
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.6
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Fri May 11 14:26:08 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPL.py 
+Log Message:
+Remove excessive debugging messages
+
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r8, operation: add
+Package: GPLtools
+User: dragon  Thu May  3 09:39:50 2007
+Files:
+  GPLtools/ChangeLog  1.19
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.6
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Thu May  3 09:39:17 PDT 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Improve xrootd handling.  Still need a way to accurately determine whether the copy of a file into xrootd succeeded or not.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r7, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 24 15:36:50 2007
+Files:
+  GPLtools/ChangeLog  1.16
+  GPLtools/cmt/setup.csh  1.6
+  GPLtools/cmt/cleanup.csh  1.6
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.6
+  GPLtools/cmt/setup.sh  1.6
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.5
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 24 13:15:38 PDT 2007
+GPLtools/python
+
+Modified Files:
+	stageFiles.py 
+Log Message:
+Added "-f" option to xrdcp command -- to force overwrite if file already exists.
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 24 13:15:15 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r6, operation: add
+Package: GPLtools
+User: dragon  Wed Apr 11 14:06:57 2007
+Files:
+  GPLtools/ChangeLog  1.13
+  GPLtools/cmt/setup.csh  1.5
+  GPLtools/cmt/cleanup.csh  1.5
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.5
+  GPLtools/cmt/setup.sh  1.5
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.5
+  GPLtools/python/stageFiles.py  1.4
+  GPLtools/python/PipelineSummary.py  1.5
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 14:06:44 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py PipelineSummary.py stageFiles.py 
+Log Message:
+Minor change adding "sys.stdout.flush()" after print statements to preserve order of test messaging.
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 14:06:10 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+update
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r5, operation: add
+Package: GPLtools
+User: dragon  Wed Apr 11 08:18:23 2007
+Files:
+  GPLtools/ChangeLog  1.11
+  GPLtools/cmt/setup.csh  1.4
+  GPLtools/cmt/cleanup.csh  1.4
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.4
+  GPLtools/cmt/setup.sh  1.4
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.4
+  GPLtools/python/stageFiles.py  1.3
+  GPLtools/python/PipelineSummary.py  1.4
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 08:18:11 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Oops, forgot to commit from top-level directory.
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Apr 11 08:17:36 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPLinit.py 
+Log Message:
+Modify GPLinit output to include an unambiguous version signature, i.e.,
+GPLinit: Using default location for GPLtools:
+lrwxr-xr-x  1 dragon ec 4 Apr 10 09:24 /afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod -> v0r3
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r4, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 17:15:53 2007
+Files:
+  GPLtools/ChangeLog  1.7
+  GPLtools/cmt/setup.csh  1.3
+  GPLtools/cmt/cleanup.csh  1.3
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.3
+  GPLtools/cmt/setup.sh  1.3
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.3
+  GPLtools/python/logger.cfg  1.4
+  GPLtools/python/GPLinit.py  1.3
+  GPLtools/python/stageFiles.py  1.3
+  GPLtools/python/PipelineSummary.py  1.4
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 17:15:32 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPL.py GPLinit.py PipelineSummary.py logger.cfg stageFiles.py 
+Log Message:
+Add cvs Id info to all files.
+Add cvs Id info to all files
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 17:15:17 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Add cvs Id info to all files.
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r3, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 09:23:33 2007
+Files:
+  GPLtools/ChangeLog  1.5
+  GPLtools/cmt/setup.csh  1.2
+  GPLtools/cmt/cleanup.csh  1.2
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.2
+  GPLtools/cmt/setup.sh  1.2
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.3
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.2
+  GPLtools/python/PipelineSummary.py  1.3
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 09:23:14 PDT 2007
+GPLtools/cmt
+
+Modified Files:
+	cleanup.csh cleanup.sh setup.csh setup.sh 
+Log Message:
+Hmmm, don't understand why a cvs commit is necessary at this level - to keep cmt happy...?
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r2, operation: add
+Package: GPLtools
+User: dragon  Tue Apr 10 09:20:56 2007
+Files:
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.3
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.2
+  GPLtools/python/PipelineSummary.py  1.3
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Tue Apr 10 09:20:45 PDT 2007
+GPLtools/python
+
+Modified Files:
+	PipelineSummary.py logger.cfg stageFiles.py 
+Log Message:
+Minor changes: made new slightly longer message format uniformly used throughout (including the module name and line number)
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: v0r1, operation: add
+Package: GPLtools
+User: dragon  Mon Apr  9 10:09:50 2007
+Files:
+  GPLtools/ChangeLog  1.1
+  GPLtools/cmt/setup.csh  1.1.1.1
+  GPLtools/cmt/cleanup.csh  1.1.1.1
+  GPLtools/cmt/requirements  1.1.1.1
+  GPLtools/cmt/cleanup.sh  1.1.1.1
+  GPLtools/cmt/setup.sh  1.1.1.1
+  GPLtools/cmt/Makefile  1.1.1.1
+  GPLtools/doc/release.notes  1.1.1.1
+  GPLtools/python/GPL.py  1.2
+  GPLtools/python/logger.cfg  1.2
+  GPLtools/python/GPLinit.py  1.2
+  GPLtools/python/stageFiles.py  1.1.1.1
+  GPLtools/python/PipelineSummary.py  1.2
+  GPLtools/python/runner.py  1.1.1.1
+
+    *
+------------------------------------------------------------
+User: dragon  Mon Apr  9 10:08:20 PDT 2007
+GPLtools/python
+
+Modified Files:
+	GPL.py GPLinit.py PipelineSummary.py logger.cfg 
+Log Message:
+Fixes:
+ PipelineSummary - allow multiple summary blocks in parallel
+Other changes:
+ logger.cfg/GPL.py - activate module name and line number in messages
+ GPLinit.py - institute new, logical location for prod version of GPLtools package,
+	/afs/slac.stanford.edu/g/glast/ground/PipelineConfig/GPLtools/prod
+
+
+    *
+------------------------------------------------------------
+User: dragon  Wed Mar 21 16:12:57 PDT 2007
+GPLtools
+
+Log Message:
+Initial package creation
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0
+		
+N GPLtools/cmt/Makefile
+I GPLtools/cmt/requirements~
+N GPLtools/cmt/setup.csh
+N GPLtools/cmt/setup.sh
+N GPLtools/cmt/cleanup.csh
+N GPLtools/cmt/cleanup.sh
+N GPLtools/cmt/requirements
+N GPLtools/python/GPL.py
+N GPLtools/python/GPLinit.py
+N GPLtools/python/PipelineSummary.py
+N GPLtools/python/logger.cfg
+N GPLtools/python/runner.py
+N GPLtools/python/stageFiles.py
+N GPLtools/doc/release.notes
+
+No conflicts created by this import
+
+    *
