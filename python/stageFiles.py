@@ -8,13 +8,12 @@ refactored: T.Glanzman 2/22/2007
 
 ## Preliminaries
 import os
-import random
 import re
 import sys
 import shutil
 import time
 
-import cpck
+import fileOps
 import runner
 
 ## Set up message logging
@@ -24,13 +23,6 @@ log = logging.getLogger("gplLong")
 filterAfs = '^/afs/'
 filterAll = '.*'
 filterNone = None
-
-
-def waitABit(minWait=5, maxWait=10):
-    delay = random.randrange(minWait, maxWait+1)
-    log.info("Waiting %d seconds." % delay)
-    time.sleep(delay)
-    return
 
 
 class StageSet:
@@ -121,7 +113,7 @@ class StageSet:
                         
                         else:                           # Try to create stageArea
                             try:
-                                os.makedirs(x)
+                                rc = fileOps.makedirs(x)
                                 stageArea=x
                                 log.debug("Successful creation of "+x)
                                 log.debug('stageArea defined from default list: '+stageArea)
@@ -156,23 +148,23 @@ class StageSet:
         """@brief Create a staging area directory (intended as a private function)"""
 
         log.debug("Entering stage setup...")
-        log.debug("os.access = "+`os.access(self.stageDir,os.F_OK)`)
+
+        stageExists = os.access(self.stageDir,os.F_OK)
+        log.debug("os.access = "+`stageExists`)
 
         ## Check if requested staging directory already exists and, if
         ## not, try to create it
-        if os.access(self.stageDir,os.F_OK):
+        if stageExists:
             log.info("Requested stage directory already exists: "+self.stageDir)
             self.setupOK=1
             self.listStageDir()
         else:
             try:
-                os.makedirs(self.stageDir)
+                rc = fileOps.makedirs(self.stageDir)
                 self.setupOK=1
                 log.debug("Successful creation of "+self.stageDir)
-##                 os.chmod(self.stageDir,'777')
-##                 log.debug("Successful chmod to 777")
-            except:
-                log.warning('Staging disabled: error from os.makedirs: '+self.stageDir)
+            except OSError:
+                log.warning('Staging disabled: error from makedirs: '+self.stageDir)
                 self.stageDir=""
                 self.setupOK=0
                 pass
@@ -384,7 +376,7 @@ class StageSet:
         # remove stage directory (unless staging is disabled)
         if self.setupOK <> 0:
             try:
-                os.rmdir(self.stageDir)
+                fileOps.rmdir(self.stageDir)
                 log.info("Removed staging directory "+str(self.stageDir))
                 rc = 0
             except:
@@ -393,7 +385,7 @@ class StageSet:
                 os.system('ls -l '+self.stageDir)
                 log.warning("*** All files & directories will be deleted! ***")
                 try:
-                    shutil.rmtree(self.stageDir)
+                    fileOps.rmtree(self.stageDir)
                     rc = 0
                 except:
                     log.error("Could not remove stage directory, "+self.stageDir)
@@ -540,7 +532,7 @@ class StagedFile(object):
         self.dumpState()
         rc = 0
         if self.source and self.location != self.source and not self.started:
-            rc = copy(self.source, self.location)
+            rc = fileOps.copy(self.source, self.location)
             pass
         if rc:
             raise IOError, "Can't stage in %s" % self.source
@@ -552,7 +544,7 @@ class StagedFile(object):
         rc = 0
         if not 'SCRATCH' in self.destinations:
             for dest in self.destinations:
-                rc |= copy(self.location, dest)
+                rc |= fileOps.copy(self.location, dest)
                 continue
             pass
         else:
@@ -561,231 +553,10 @@ class StagedFile(object):
         
         if not keep and self.cleanup and os.access(self.location, os.W_OK):
             log.info('Nuking %s' % self.location)
-            os.remove(self.location)
+            fileOps.remove(self.location)
         else:
             log.info('Not nuking %s' % self.location)
             pass
         return rc
     pass
-
-
-
-
-xrootStart = "root:"
-xrootdLocation = os.getenv("GPL_XROOTD_DIR","/afs/slac.stanford.edu/g/glast/applications/xrootd/PROD/bin")
-xrdcp    = xrootdLocation+"/xrdcp "
-xrdstat  = xrootdLocation+"/xrd.pl -w stat "
-xrdrm    = xrootdLocation+"/xrd.pl rm "
-
-
-def checkFile(fileName):
-    log.info("Verifying existence of " + fileName)
-    if fileName.startswith(xrootStart):
-        rc = _xrootCheckFile(fileName)
-    else:
-        rc = _fsCheckFile(fileName)
-        pass
-    if not rc: log.error("Could not access requested file: " + fileName)
-    return rc
-
-def _xrootCheckFile(fileName):
-    xrdcmd = xrdstat + fileName
-    xrdrc = os.system(xrdcmd)
-    log.debug("xrdstat return code = " + str(xrdrc))
-    rc = not xrdrc
-    return rc
-
-def _fsCheckFile(fileName):
-    rc = os.access(fileName, os.R_OK)
-    return rc
-
-
-def copy(fromFile, toFile):
-    rc = 0
-
-    if toFile == fromFile:
-        log.info("Not copying %s to itself." % fromFile)
-        return rc
-
-    # Verify source file is accessible
-    if not checkFile(fromFile): return 1
-
-    if fromFile.startswith(xrootStart) or toFile.startswith(xrootStart):
-        rc = _xrootdCopy(fromFile, toFile)
-    else:
-        rc = _fsCopy(fromFile, toFile)
-        pass
-    
-    # Verify destination file has been copied
-    #   (this is a trivial existence check - more could be done here...)
-    if not checkFile(toFile): return 1
-        
-    return rc
-
-
-def _xrootdCopy(fromFile, toFile):
-    """
-    @brief copy a staged file to final xrootd repository.
-    @param fromFile = name of staged file, toFile = name of final file
-    @return success code
-    """
-    maxtry = 5
-    mytry = 1
-    rc = 0
-
-    
-    ## The following kludge is necessary (11/4/2008) due to bug in xrdcp
-    ##  wherein overwriting an existing file on a "full" server will fail
-    ##  The fix is to first delete the file.  
-    if toFile.startswith(xrootStart):
-        log.debug("Attempting to remove destination file")
-        xrdcmd = xrdrm+toFile
-        rc = os.system(xrdcmd)  ## failure is Okay => file does not already exist
-        pass
-
-
-# Copy source -> destination
-    while mytry <= maxtry:
-        if mytry > 1:        ## this happens during a retry
-            log.warning("Retry xrdcp  (mytry = "+str(mytry)+") after a brief pause...")
-            waitABit()       # spin wheels and hope things get better
-            pass
-        start = time.time()
-        xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile   #first time try standard copy
-        log.info("Try #"+str(mytry)+": executing...\n"+xrdcmd)
-        rc = os.system(xrdcmd)
-        log.debug("xrdcp return code = "+str(rc))
-        if int(rc) != 0:
-            rc = 0
-            mytry += 1
-            continue
-        else:
-            deltaT = time.time() - start
-            log.info('Transferred file in %g seconds' %
-                     (deltaT))
-            break
-        pass
-    else:
-        log.error("xrdcp repeatedly failed, setting rc=1")
-        rc=1
-        return rc
-        pass
-    
-
-    return rc
-
-
-def _fsCopy(fromFile, toFile):
-    """
-    @brief copy a file
-    @param fromFile = name of ssource file
-    @param toFile = name of destination file
-    @return success code
-    """
-    maxtry = 5
-    rc=0
-
-    tempName = toFile + '.part'
-
-## To allow for possible filesystem failures (e.g. delay to
-## automount), several attempts are made to copy the input file to
-## local scratch space.  If that fails, then staging is effectively
-## disabled for that file.
-
-    for mytry in range(1, maxtry+1):
-        if mytry > 1: waitABit()
-        rc = 0
-        start = time.time()
-        try:
-            log.info('Starting try %d.' % mytry)
-            rc |= mkdirFor(tempName)
-            log.info("Copying %s to %s " % (fromFile, tempName))
-            # shutil.copy(fromFile, tempName)
-            checksum = cpck.copyAndSum(fromFile, tempName)
-            log.info('Checksum = %s' % checksum)
-            log.info("Renaming %s to %s" % (tempName, toFile))
-            os.rename(tempName, toFile)
-            break
-        except:
-            ex, exInfo, traceBack = sys.exc_info()
-            rc = 1
-            log.error("Error copying file to %s (try %d): %s" %
-                      (toFile, mytry, exInfo))
-            continue
-        continue
-    
-    if rc:
-        log.info('Failed after %d tries' % mytry)
-        return rc
-
-    deltaT = time.time() - start
-        
-    log.info('Succeeded after %d tries' % mytry)
-
-    try:
-        size = os.stat(toFile).st_size
-    except:
-        ex, exInfo, traceBack = sys.exc_info()
-        log.error("Can't stat file %s: %s" % (toFile, exInfo))
-        return 1
-
-    if deltaT:
-        rate = '%g' % (float(size) / deltaT)
-    else:
-        rate = 'many'
-        pass
-    log.info('Transferred %g bytes in %g seconds, avg. rate = %s B/s' %
-             (size, deltaT, rate))
-
-    return rc
-
-
-
-
-def mkdirFor(filePath):
-    status = 0
-    dirPath = os.path.dirname(filePath)
-    if not os.path.isdir(dirPath):
-        log.info('Making directory %s' % dirPath)
-        #status |= runner.run('mkdir -p %s' % dirPath)
-        makedirs(dirPath)
-        pass
-    return status
-
-
-def makedirs(name, mode=0777):
-    """makedirs(path [, mode=0777])
-
-    Super-mkdir; create a leaf directory and all intermediate ones.
-    Works like mkdir, except that any intermediate path segment (not
-    just the rightmost) will be created if it does not exist.  This is
-    recursive.
-
-    This is a modified version of os.makedirs that's more careful to not
-    try to make directories that already exist.
-
-    """
-    from errno import EEXIST
-    head, tail = os.path.split(name)
-    if not tail:
-        head, tail = os.path.split(head)
-    if head and tail and not os.path.exists(head):
-        try:
-            makedirs(head, mode)
-        except OSError, e:
-            # be happy if someone already created the path
-            if e.errno != EEXIST:
-                raise
-        if tail == os.curdir:     # xxx/newdir/. exists if xxx/newdir exists
-            return
-    if not os.path.exists(name):
-        try:
-            os.mkdir(name, mode)
-        except OSError, e:
-            # be happy if someone already created the path
-            if e.errno != EEXIST:
-                raise
-            pass
-        pass
-    return
 
