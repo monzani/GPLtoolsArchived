@@ -1,4 +1,4 @@
-# echo "Setting fileOps  in /afs/slac.stanford.edu/g/glast/ground/releases/volume01/L1Proc/test/1.74/GPLtools/b/GPLtools"
+# echo "Setting fileOps  in /a/surrey01/vol/vol2/g.svac/focke/L1/GPLtools/GPLtools"
 
 if ( $?CMTROOT == 0 ) then
   setenv CMTROOT /afs/slac/g/glast/applications/CMT/v1r18p20061003
@@ -9,6 +9,6 @@ set tempfile=`${CMTROOT}/mgr/cmt -quiet build temporary_name`
 if $status != 0 then
   set tempfile=/tmp/cmt.$$
 endif
-${CMTROOT}/mgr/cmt setup -csh -pack=fileOps -version= -path=/afs/slac.stanford.edu/g/glast/ground/releases/volume01/L1Proc/test/1.74/GPLtools/b/GPLtools  -no_cleanup $* >${tempfile}; source ${tempfile}
+${CMTROOT}/mgr/cmt setup -csh -pack=fileOps -version= -path=/a/surrey01/vol/vol2/g.svac/focke/L1/GPLtools/GPLtools  -no_cleanup $* >${tempfile}; source ${tempfile}
 /bin/rm -f ${tempfile}
 

@@ -23,7 +23,7 @@ log = logging.getLogger("gplLong")
 filterAfs = '^/afs/'
 filterAll = '.*'
 filterNone = None
-
+defaultStrictSetup = False
 
 class StageSet:
 
@@ -61,12 +61,14 @@ class StageSet:
 
 
     def __init__(self, stageName=None, stageArea=None, excludeIn=filterAfs,
-                 excludeOut=filterNone, autoStart=True):
+                 excludeOut=filterNone, autoStart=True, strictSetup=None):
         """@brief Initialize the staging system
         @param [stageName] Name of directory where staged copies are kept.
         @param [stageArea] Parent of directory where staged copies are kept.
         @param [exculde] Regular expresion for file names which should not be staged.
         """
+
+        if strictSetup is None: strictSetup = defaultStrictSetup
 
         log.debug("Entering stageFiles constructor...")
         self.setupFlag = 0
@@ -140,6 +142,9 @@ class StageSet:
         self.stageDir = os.path.join(stageArea, stageName)
         log.debug('Targeted staging directory = '+self.stageDir)
         self.setup()
+
+        if strictSetup and not self.setupOK:
+            raise OSError, "Couldn't setup staging!"
 
         return
 
