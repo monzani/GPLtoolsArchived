@@ -95,14 +95,14 @@ def copy(fromFile, toFile, maxTry=None):
 
         log.info('Starting try %d.' % mytry)
 
-        # Verify source file is accessible and get its size
-        fromSize = getSize(fromFile)
-        if fromSize is None:
-            log.error('%s does not exist!' % fromFile)
-            rc |= 1
-            continue
-
         try:
+            # Verify source file is accessible and get its size
+            fromSize = getSize(fromFile)
+            if fromSize is None:
+                log.error('%s does not exist!' % fromFile)
+                rc |= 1
+                continue
+
             # The following kludge is necessary (11/4/2008) due to bug in xrdcp
             #  wherein overwriting an existing file on a "full" server will fail
             #  The fix is to first delete the file.  
@@ -114,7 +114,7 @@ def copy(fromFile, toFile, maxTry=None):
             rc |= impl.copy(fromFile, tn)
         except OSError:
             ex, exInfo = sys.exc_info()[:2]
-            rc = 1
+            rc |= 1
             log.error("Error copying file to %s (try %d): %s %s" %
                       (tn, mytry, ex, exInfo))
             continue
@@ -124,7 +124,11 @@ def copy(fromFile, toFile, maxTry=None):
         deltaT = time.time() - start
         
         # Verify destination file has been copied
-        toSize = getSize(tn)
+        try:
+            toSize = getSize(tn)
+        except OSError:
+            toSize = None
+            pass
         if toSize is None:
             log.error('%s does not exist!' % tn)
             rc = 1
