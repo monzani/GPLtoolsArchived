@@ -28,7 +28,7 @@ def copy(fromFile, toFile):
 
     xrdcmd=xrdcp+" -np -f "+fromFile+" "+toFile   #first time try standard copy
     log.info("Executing...\n"+xrdcmd)
-    rc = os.system(xrdcmd)
+    rc = runner.run(xrdcmd)
     log.debug("xrdcp return code = "+str(rc))
     
     return rc
@@ -36,7 +36,7 @@ def copy(fromFile, toFile):
 
 def exists(fileName):
     xrdcmd = xrdstat + fileName
-    xrdrc = os.system(xrdcmd)
+    xrdrc = runner.run(xrdcmd)
     log.debug("xrdstat return code = " + str(xrdrc))
     rc = not xrdrc
     return rc
@@ -63,7 +63,7 @@ def mkdirFor(fileName, mode):
 
 def remove(fileName):
     xrdcmd = '%s rm %s' % (xrd, fileName)
-    rc = os.system(xrdcmd)  ## failure is Okay => file does not already exist
+    rc = runner.run(xrdcmd)  ## failure is Okay => file does not already exist
     return rc
 
 
@@ -83,3 +83,9 @@ def tempName(fileName):
 
 def unTemp(fileName):
     return 0
+
+
+def rename(src, dst):
+    # Rename only works against a server, not the redirector.
+    # So if we want to implement this, we have to figure that out.
+    return 1

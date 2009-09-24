@@ -115,5 +115,10 @@ def tempName(fileName):
 def unTemp(fileName):
     tn = tempName(fileName)
     log.info("Renaming %s to %s" % (tn, fileName))
-    os.rename(tn, fileName)
+    rename(tn, fileName)
+    return 0
+
+
+def rename(src, dst):
+    os.rename(src, dst)
     return 0
