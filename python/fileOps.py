@@ -5,6 +5,7 @@
 import random
 import sys
 import time
+import traceback
 
 import fsFileOps
 import xrootdFileOps
@@ -113,10 +114,9 @@ def copy(fromFile, toFile, maxTry=None):
             rc |= mkdirFor(tn)
             rc |= impl.copy(fromFile, tn)
         except OSError:
-            ex, exInfo = sys.exc_info()[:2]
             rc |= 1
-            log.error("Error copying file to %s (try %d): %s %s" %
-                      (tn, mytry, ex, exInfo))
+            log.error("Error copying file to %s (try %d):" % (tn, mytry))
+            traceback.print_exc()
             continue
 
         if rc: continue
