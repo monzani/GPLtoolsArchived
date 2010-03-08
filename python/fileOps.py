@@ -113,7 +113,7 @@ def copy(fromFile, toFile, maxTry=None):
 
             rc |= mkdirFor(tn)
             rc |= impl.copy(fromFile, tn)
-        except OSError:
+        except EnvironmentError:
             rc |= 1
             log.error("Error copying file to %s (try %d):" % (tn, mytry))
             traceback.print_exc()
