@@ -113,36 +113,40 @@ def copy(fromFile, toFile, maxTry=None):
 
             rc |= mkdirFor(tn)
             rc |= impl.copy(fromFile, tn)
+
+            if rc:
+                msg = 'Oops. Retrying. (rc=%d)' % rc
+                log.error(msg)
+                continue
+        
+            deltaT = time.time() - start
+        
+            # Verify destination file has been copied
+            try:
+                toSize = getSize(tn)
+            except OSError:
+                toSize = None
+                pass
+            if toSize is None:
+                log.error('%s does not exist!' % tn)
+                rc = 1
+                continue
+
+            if toSize != fromSize:
+                msg = 'Size mismatch!\n%d: %s\n%d %s' % \
+                      (fromSize, fromFile, toSize, tn)
+                log.error(msg)
+                rc = 1
+                continue
+
+            rc |= unTemp(toFile)
+        
         except EnvironmentError:
             rc |= 1
-            log.error("Error copying file to %s (try %d):" % (tn, mytry))
+            log.error("Error copying file to %s (try %d):" % (toFile, mytry))
             traceback.print_exc()
             continue
 
-        if rc: continue
-        
-        deltaT = time.time() - start
-        
-        # Verify destination file has been copied
-        try:
-            toSize = getSize(tn)
-        except OSError:
-            toSize = None
-            pass
-        if toSize is None:
-            log.error('%s does not exist!' % tn)
-            rc = 1
-            continue
-
-        if toSize != fromSize:
-            msg = 'Size mismatch!\n%d: %s\n%d %s' % \
-                  (fromSize, fromFile, toSize, tn)
-            log.error(msg)
-            rc = 1
-            continue
-
-        rc |= unTemp(toFile)
-        
         log.debug('Try %d rc: %d' % (mytry,rc))
         if not rc: break
         continue
