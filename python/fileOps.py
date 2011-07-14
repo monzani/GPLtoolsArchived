@@ -16,9 +16,9 @@ log = logging.getLogger("gplLong")
 
 dirMode = 0755
 
-maxtry = 5
-minWait = 5
-maxWait = 10
+defMaxTry = 5
+defMinWait = 5
+defMaxWait = 10
 
 xrootStart = "root:"
 
@@ -62,7 +62,7 @@ def _makeWrapper(funcName):
 
 
 
-def copy(fromFile, toFile, maxTry=None):
+def copy(fromFile, toFile, maxTry=None, minWait=None, maxWait=None):
     """
     @brief copy a file
     @param fromFile = name of ssource file
@@ -71,7 +71,9 @@ def copy(fromFile, toFile, maxTry=None):
 
     This does retries, logging, and performs various checks.
     """
-    if maxTry is None: maxTry = maxtry
+    if maxTry is None: maxTry = defMaxTry
+    if minWait is None: minWait = defMinWait
+    if maxWait is None: maxWait = defMaxWait
     
     rc = 0
 
@@ -90,7 +92,7 @@ def copy(fromFile, toFile, maxTry=None):
     # local scratch space.  If that fails, then staging is effectively
     # disabled for that file.
     for mytry in range(maxTry):
-        if mytry: waitABit()
+        if mytry: waitABit(minWait, maxWait)
         rc = 0
         start = time.time()
 
@@ -168,11 +170,21 @@ def copy(fromFile, toFile, maxTry=None):
     return rc
 
 
-def exists(fileName):
+def exists(fileName, maxTry=None, minWait=None, maxWait=None):
+    if maxTry is None: maxTry = defMaxTry
+    if minWait is None: minWait = defMinWait
+    if maxWait is None: maxWait = defMaxWait
+
     log.info("Verifying existence of " + fileName)
     impl = whichImplementation(fileName)
-    rc = impl.exists(fileName)
-    if not rc: log.error("Could not access requested file: " + fileName)
+    for myTry in range(1, maxTry+1):
+        log.info("Attempt %d" % myTry)
+        rc = impl.exists(fileName)
+        if rc: break
+        else: waitABit(minWait, maxWait)
+        continue
+    if not rc: log.error("Could not access requested file %s after %d tries" % (fileName, myTry))
+    rc = rc and myTry
     return rc
 
 
