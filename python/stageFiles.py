@@ -61,11 +61,12 @@ class StageSet:
 
 
     def __init__(self, stageName=None, stageArea=None, excludeIn=filterAfs,
-                 excludeOut=filterNone, autoStart=True, strictSetup=None):
+                 excludeOut=filterNone, autoStart=True, strictSetup=None, lustre=True):
         """@brief Initialize the staging system
         @param [stageName] Name of directory where staged copies are kept.
         @param [stageArea] Parent of directory where staged copies are kept.
-        @param [exculde] Regular expresion for file names which should not be staged.
+        @param [exclude] Regular expresion for file names which should not be staged.
+        @param [lustre] boolean saying whether to attempt using lustre scratch space
         """
 
         if strictSetup is None: strictSetup = defaultStrictSetup
@@ -83,10 +84,14 @@ class StageSet:
         ## directories/partitions:
         ##
         ## SLAC batch machines all have /scratch for this purpose
+        ## Newer SLAC batch machines have /lustre/ki/pfs/fermi_scratch
         ## Desktop machines may or may not have /scratch
         ## Public machines (norics) do not have /scratch (only /tmp)
-        
+
         defaultStageAreas=["/scratch","/tmp"]
+
+        lustreStageArea = ["/lustre/ki/pfs/fermi_scratch"]  ## 5/9/2013 (may change!)
+        if lustre: defaultStageAreas = lustreStageArea + defaultStageAreas
 
         ##
         ## Construct path to staging area
