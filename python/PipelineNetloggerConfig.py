@@ -19,9 +19,9 @@ __release__  = "$Name$"
 __credits__  = "SLAC"
 
 # Production setup. Messages will show up in the Flight page of LogWatcher.
-DEST_PROD  = "glastlnx06:15502 isoc-ops5:15502"
+DEST_PROD  = "fermilnx01:15502 fermilnx02:15502 isoc-ops5:15502"
 LEVEL_PROD = "INFO"
 
-# Development. Messages will show the Test page.
-DEST_DEVEL  = "glastlnx25:15502"
+# Development. Messages will show the Nightly page.
+DEST_DEVEL  = "fermilnx04:15502"
 LEVEL_DEVEL = "INFO"
