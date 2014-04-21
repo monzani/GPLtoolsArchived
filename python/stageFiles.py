@@ -80,7 +80,7 @@ class StageSet:
         self.autoStart = autoStart
         
         ##
-        ## defaultStateAreas defines all possible machine-local stage
+        ## defaultStageAreas defines all possible machine-local stage
         ## directories/partitions:
         ##
         ## SLAC batch machines all have /scratch for this purpose
@@ -217,7 +217,7 @@ class StageSet:
             return inFile
         else:
             cleanup = True
-            stageName = self.stagedName(inFile)
+            stageName = self.stagedName(inFile,mode="IN")
             pass
         
         log.info("\nstageIn for: "+inFile)
@@ -258,7 +258,12 @@ class StageSet:
             stageName = outFile
             cleanup = False
         else:
-            stageName = self.stagedName(outFile)
+            stageName = self.stagedName(outFile,mode='OUT')
+            path = os.path.dirname(stageName)
+            if not os.access(path,os.F_OK):
+                log.info("Creating "+path)
+                rc = fileOps.makedirs(path)
+                pass
             log.info("\nstageOut for: "+outFile)
             cleanup = True
             pass
@@ -279,7 +284,7 @@ class StageSet:
 
 
     def stageMod(self, modFile):
-        """@brief Stage a in a file to be modified and then staged out
+        """@brief Stage in a file to be modified and then staged out
         @param modFile real name of the target file
         @return name of the staged file
         """
@@ -294,7 +299,7 @@ class StageSet:
             return modFile
         else:
             cleanup = True
-            stageName = self.stagedName(modFile)
+            stageName = self.stagedName(modFile,mode='MOD')
             pass
         
         log.info("\nstageMod for: "+modFile)
@@ -413,13 +418,13 @@ class StageSet:
 
 
 
-    def stagedName(self, fileName):
+    def stagedName(self, fileName, mode=''):
         """@brief Generate names of staged files.
         @param fileName Real name of file.
         @return Name of staged file.
         """
         base = os.path.basename(fileName)
-        stageName = os.path.join(self.stageDir, base)
+        stageName = os.path.join(self.stageDir, mode, base)
         return stageName
 
 
@@ -475,7 +480,10 @@ class StageSet:
         """@brief List contents of current staging directory"""
         if self.setupOK == 0: return
         log.info("\nContents of stage directory \n ls -laF "+self.stageDir)
-        dirlist = os.system('ls -laF '+self.stageDir)
+        rc1 = os.system('ls -laF '+self.stageDir)
+        log.info("\nContents of stage sub-directories \n ls -laF "+self.stageDir+'/*')
+        subdirs = os.path.join(self.stageDir,'*')
+        rc2 = os.system('ls -laF '+subdirs)
         return
 
 
