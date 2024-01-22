@@ -87,7 +87,7 @@ class StageSet:
         ## Funally, interactive machines have scratch space at /tmp
         
         
-        defaultStageAreas=["/lscratch","/sdf/scratch/fermi","/tmp"]
+        defaultStageAreas=["/lscratch/glastraw","/sdf/scratch/fermi","/tmp"]
 
         ##
         ## Construct path to staging area
