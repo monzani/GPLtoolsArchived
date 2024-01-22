@@ -82,11 +82,12 @@ class StageSet:
         ## defaultStateAreas defines all possible machine-local stage
         ## directories/partitions:
         ##
-        ## SLAC batch machines all have /scratch for this purpose
-        ## Desktop machines may or may not have /scratch
-        ## Public machines (norics) do not have /scratch (only /tmp)
+        ## S3DF machines all have local /lscratch for this purpose
+        ## The shared scratch space is located at /sdf/scratch/fermi 
+        ## Funally, interactive machines have scratch space at /tmp
         
-        defaultStageAreas=["/scratch","/tmp"]
+        
+        defaultStageAreas=["/lscratch","/sdf/scratch/fermi","/tmp"]
 
         ##
         ## Construct path to staging area
