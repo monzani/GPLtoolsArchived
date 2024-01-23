@@ -1,4 +1,4 @@
-#! /afs/slac/g/glast/isoc/flightOps/rhel3_gcc32/ISOC_PROD/bin/shisoc python2.5
+#!/sdf/group/fermi/a/isoc/flightOps/rhel6_gcc44/ISOC_PROD/bin/shisoc python2.6
 ## toXrootdCatalog.py - copy specified file to xrootd location and register in
 ##                      the data catalogue
 ##
@@ -32,11 +32,6 @@
 ## xrootd client tools: https://confluence.slac.stanford.edu/display/ds/Using+Xrootd+client+tools
 ## datacat tools: https://confluence.slac.stanford.edu/display/ds/Data+Catalog+Users+Guide
 ##
-## Some alternate installations of python for !shbang usage below...
-##!/afs/slac/g/glast/isoc/flightOps/ISOC_PROD/bin/shisoc python2.5
-##!/usr/local/bin/python
-
-
 ##
 ## Preliminaries
 ##
