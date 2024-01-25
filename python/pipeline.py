@@ -1,4 +1,4 @@
-#!/sdf/group/fermi/a/isoc/flightOps/rhel6_gcc44/ISOC_PROD/bin/shisoc python2.6
+#!/sdf/data/fermi/a/isoc/flightOps/rhel6_gcc44/ISOC_PROD/bin/shisoc python2.6
 
 """@brief Interface to pipeline functions.
 """
@@ -10,20 +10,19 @@ import runner
 
 maxVarLength = 1000
 def setVariable(varName, value):
-    # use bash function
     value = str(value)
     if len(value) > maxVarLength:
         print >> sys.stderr, 'Variable is probably too long to work correctly (max %s).' % maxVarLength
         pass
-    cmd = "pipelineSet %s '%s'" % (varName, value)
-    status = runner.run(cmd)
-    return status
+
+    with open(os.environ["PIPELINE_SUMMARY"], "a") as f:
+        f.write("Pipeline.%s: %s\n" %(varName, value))
 
 
 def createSubStream(subTask, stream=-1, args=''):
-    cmd = "pipelineCreateStream %s %s '%s'" % (subTask, stream, args)
-    status = runner.run(cmd)
-    return status
+
+    with open(os.environ["PIPELINE_SUMMARY"], "a") as f:
+        f.write("PipelineCreateStream.%s.%d: %s\n" %(subTask, int(stream), args))
 
 
 def getProcess():
